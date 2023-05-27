@@ -10,12 +10,14 @@ import com.lld.im.service.friendship.dao.ImFriendShipRequestEntity;
 import com.lld.im.service.friendship.dao.mapper.ImFriendShipRequestMapper;
 import com.lld.im.service.friendship.model.req.ApproverFriendRequestReq;
 import com.lld.im.service.friendship.model.req.FriendDto;
+import com.lld.im.service.friendship.model.req.ReadFriendShipRequestReq;
 import com.lld.im.service.friendship.service.ImFriendShipRequestService;
 import com.lld.im.service.friendship.service.ImFriendShipService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author tangcj
@@ -99,6 +101,26 @@ public class ImFriendShipRequestServiceImpl implements ImFriendShipRequestServic
                 return responseVO;
             }
         }
+        return ResponseVO.successResponse();
+    }
+
+    @Override
+    public ResponseVO getFriendRequest(String fromId, Integer appId) {
+        QueryWrapper<ImFriendShipRequestEntity> query = new QueryWrapper();
+        query.eq("app_id", appId);
+        query.eq("to_id", fromId);
+        List<ImFriendShipRequestEntity> requestList = imFriendShipRequestMapper.selectList(query);
+        return ResponseVO.successResponse(requestList);
+    }
+
+    @Override
+    public ResponseVO readFriendShipRequestReq(ReadFriendShipRequestReq req) {
+        QueryWrapper<ImFriendShipRequestEntity> query = new QueryWrapper<>();
+        query.eq("app_id", req.getAppId());
+        query.eq("to_id", req.getFromId());
+        ImFriendShipRequestEntity update = new ImFriendShipRequestEntity();
+        update.setReadStatus(1);
+        imFriendShipRequestMapper.update(update, query);
         return ResponseVO.successResponse();
     }
 }
