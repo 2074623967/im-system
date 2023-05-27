@@ -18,4 +18,6 @@ public interface ImFriendShipService {
     ResponseVO getAllFriendShip(GetAllFriendShipReq req);
 
     ResponseVO getRelation(GetRelationReq req);
+
+    ResponseVO checkFriendship(CheckFriendShipReq req);
 }

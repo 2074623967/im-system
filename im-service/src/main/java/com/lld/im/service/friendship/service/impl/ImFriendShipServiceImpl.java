@@ -4,11 +4,13 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.lld.im.common.ResponseVO;
+import com.lld.im.common.enums.CheckFriendShipTypeEnum;
 import com.lld.im.common.enums.FriendShipErrorCode;
 import com.lld.im.common.enums.FriendShipStatusEnum;
 import com.lld.im.service.friendship.dao.ImFriendShipEntity;
 import com.lld.im.service.friendship.dao.mapper.ImFriendShipMapper;
 import com.lld.im.service.friendship.model.req.*;
+import com.lld.im.service.friendship.model.resp.CheckFriendShipResp;
 import com.lld.im.service.friendship.model.resp.ImportFriendShipResp;
 import com.lld.im.service.friendship.service.ImFriendShipService;
 import com.lld.im.service.user.dao.ImUserDataEntity;
@@ -21,6 +23,9 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * @author tangcj
@@ -125,22 +130,48 @@ public class ImFriendShipServiceImpl implements ImFriendShipService {
     @Override
     public ResponseVO getAllFriendShip(GetAllFriendShipReq req) {
         QueryWrapper<ImFriendShipEntity> query = new QueryWrapper<>();
-        query.eq("app_id",req.getAppId());
-        query.eq("from_id",req.getFromId());
+        query.eq("app_id", req.getAppId());
+        query.eq("from_id", req.getFromId());
         return ResponseVO.successResponse(imFriendShipMapper.selectList(query));
     }
 
     @Override
     public ResponseVO getRelation(GetRelationReq req) {
         QueryWrapper<ImFriendShipEntity> query = new QueryWrapper<>();
-        query.eq("app_id",req.getAppId());
-        query.eq("from_id",req.getFromId());
-        query.eq("to_id",req.getToId());
+        query.eq("app_id", req.getAppId());
+        query.eq("from_id", req.getFromId());
+        query.eq("to_id", req.getToId());
         ImFriendShipEntity entity = imFriendShipMapper.selectOne(query);
-        if(entity == null){
+        if (entity == null) {
             return ResponseVO.errorResponse(FriendShipErrorCode.REPEATSHIP_IS_NOT_EXIST);
         }
         return ResponseVO.successResponse(entity);
+    }
+
+    @Override
+    public ResponseVO checkFriendship(CheckFriendShipReq req) {
+        Map<String, Integer> result
+                = req.getToIds().stream()
+                .collect(Collectors.toMap(Function.identity(), s -> 0));
+        List<CheckFriendShipResp> resp;
+        if (req.getCheckType() == CheckFriendShipTypeEnum.SINGLE.getType()) {
+            resp = imFriendShipMapper.checkFriendShip(req);
+        } else {
+            resp = imFriendShipMapper.checkFriendShipBoth(req);
+        }
+            Map<String, Integer> collect = resp.stream()
+                    .collect(Collectors.toMap(CheckFriendShipResp::getToId
+                            , CheckFriendShipResp::getStatus));
+            for (String toId : result.keySet()) {
+                if (!collect.containsKey(toId)) {
+                    CheckFriendShipResp checkFriendShipResp = new CheckFriendShipResp();
+                    checkFriendShipResp.setFromId(req.getFromId());
+                    checkFriendShipResp.setToId(toId);
+                    checkFriendShipResp.setStatus(result.get(toId));
+                    resp.add(checkFriendShipResp);
+                }
+            }
+        return ResponseVO.successResponse(resp);
     }
 
     @Transactional
