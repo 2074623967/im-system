@@ -26,4 +26,6 @@ public interface ImFriendShipService {
     ResponseVO deleteBlack(DeleteBlackReq req);
 
     ResponseVO checkBlck(CheckFriendShipReq req);
+
+    ResponseVO doAddFriend(String fromId, FriendDto dto, Integer appId);
 }

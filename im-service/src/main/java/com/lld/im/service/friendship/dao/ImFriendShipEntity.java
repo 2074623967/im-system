@@ -39,7 +39,7 @@ public class ImFriendShipEntity {
     /**
      * 好友关系序列号
      */
-//    @TableField(updateStrategy = FieldStrategy.IGNORED)
+    //    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private Long friendSequence;
 
     /**
@@ -49,7 +49,7 @@ public class ImFriendShipEntity {
     /**
      * 好友来源
      */
-//    @TableField(updateStrategy = FieldStrategy.IGNORED)
+    //    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private String addSource;
 
     private String extra;
