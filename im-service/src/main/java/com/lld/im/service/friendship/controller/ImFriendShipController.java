@@ -2,6 +2,7 @@ package com.lld.im.service.friendship.controller;
 
 import com.lld.im.common.ResponseVO;
 import com.lld.im.service.friendship.model.req.AddFriendReq;
+import com.lld.im.service.friendship.model.req.DeleteFriendReq;
 import com.lld.im.service.friendship.model.req.ImporFriendShipReq;
 import com.lld.im.service.friendship.model.req.UpdateFriendReq;
 import com.lld.im.service.friendship.service.ImFriendShipService;
@@ -38,5 +39,17 @@ public class ImFriendShipController {
     public ResponseVO updateFriend(@RequestBody @Validated UpdateFriendReq req, Integer appId){
         req.setAppId(appId);
         return imFriendShipService.updateFriend(req);
+    }
+
+    @RequestMapping("/deleteFriend")
+    public ResponseVO deleteFriend(@RequestBody @Validated DeleteFriendReq req, Integer appId){
+        req.setAppId(appId);
+        return imFriendShipService.deleteFriend(req);
+    }
+
+    @RequestMapping("/deleteAllFriend")
+    public ResponseVO deleteAllFriend(@RequestBody @Validated DeleteFriendReq req, Integer appId){
+        req.setAppId(appId);
+        return imFriendShipService.deleteAllFriend(req);
     }
 }
