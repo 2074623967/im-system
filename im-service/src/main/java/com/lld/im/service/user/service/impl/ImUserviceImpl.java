@@ -7,11 +7,13 @@ import com.lld.im.common.enums.UserErrorCode;
 import com.lld.im.common.exception.ApplicationException;
 import com.lld.im.service.user.dao.ImUserDataEntity;
 import com.lld.im.service.user.dao.mapper.ImUserDataMapper;
-import com.lld.im.service.user.model.req.*;
+import com.lld.im.service.user.model.req.DeleteUserReq;
+import com.lld.im.service.user.model.req.GetUserInfoReq;
+import com.lld.im.service.user.model.req.ImportUserReq;
+import com.lld.im.service.user.model.req.ModifyUserInfoReq;
 import com.lld.im.service.user.model.resp.GetUserInfoResp;
 import com.lld.im.service.user.model.resp.ImportUserResp;
 import com.lld.im.service.user.service.ImUserService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -21,13 +23,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author tangcj
  * @date 2023/05/25 21:31
  **/
-@Slf4j
 @Service
 public class ImUserviceImpl implements ImUserService {
 
@@ -43,21 +43,24 @@ public class ImUserviceImpl implements ImUserService {
             //todo 返回数量过多
 
         }
+        ImportUserResp resp = new ImportUserResp();
         List<String> successId = new ArrayList<>();
         List<String> errorId = new ArrayList<>();
-        req.getUserData().forEach(e -> {
+        for (ImUserDataEntity imUserDataEntity : req.getUserData()) {
             try {
-                e.setAppId(req.getAppId());
-                int insert = imUserDataMapper.insert(e);
+                imUserDataEntity.setAppId(req.getAppId());
+                int insert = imUserDataMapper.insert(imUserDataEntity);
                 if (insert == 1) {
-                    successId.add(e.getUserId());
+                    successId.add(imUserDataEntity.getUserId());
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
-                errorId.add(e.getUserId());
+                errorId.add(imUserDataEntity.getUserId());
             }
-        });
-        return null;
+        }
+        resp.setErrorId(errorId);
+        resp.setSuccessId(successId);
+        return ResponseVO.successResponse(resp);
     }
 
     @Override
@@ -156,7 +159,7 @@ public class ImUserviceImpl implements ImUserService {
         update.setAppId(null);
         update.setUserId(null);
         int update1 = imUserDataMapper.update(update, query);
-        if (update1 ==1) {
+        if (update1 == 1) {
             return ResponseVO.successResponse();
         }
         throw new ApplicationException(UserErrorCode.MODIFY_USER_ERROR);
