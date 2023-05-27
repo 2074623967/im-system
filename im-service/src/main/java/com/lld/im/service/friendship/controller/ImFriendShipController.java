@@ -1,10 +1,7 @@
 package com.lld.im.service.friendship.controller;
 
 import com.lld.im.common.ResponseVO;
-import com.lld.im.service.friendship.model.req.AddFriendReq;
-import com.lld.im.service.friendship.model.req.DeleteFriendReq;
-import com.lld.im.service.friendship.model.req.ImporFriendShipReq;
-import com.lld.im.service.friendship.model.req.UpdateFriendReq;
+import com.lld.im.service.friendship.model.req.*;
 import com.lld.im.service.friendship.service.ImFriendShipService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -51,5 +48,17 @@ public class ImFriendShipController {
     public ResponseVO deleteAllFriend(@RequestBody @Validated DeleteFriendReq req, Integer appId){
         req.setAppId(appId);
         return imFriendShipService.deleteAllFriend(req);
+    }
+
+    @RequestMapping("/getAllFriendShip")
+    public ResponseVO getAllFriendShip(@RequestBody @Validated GetAllFriendShipReq req, Integer appId){
+        req.setAppId(appId);
+        return imFriendShipService.getAllFriendShip(req);
+    }
+
+    @RequestMapping("/getRelation")
+    public ResponseVO getRelation(@RequestBody @Validated GetRelationReq req, Integer appId){
+        req.setAppId(appId);
+        return imFriendShipService.getRelation(req);
     }
 }

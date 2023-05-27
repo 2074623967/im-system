@@ -122,6 +122,27 @@ public class ImFriendShipServiceImpl implements ImFriendShipService {
         return ResponseVO.successResponse();
     }
 
+    @Override
+    public ResponseVO getAllFriendShip(GetAllFriendShipReq req) {
+        QueryWrapper<ImFriendShipEntity> query = new QueryWrapper<>();
+        query.eq("app_id",req.getAppId());
+        query.eq("from_id",req.getFromId());
+        return ResponseVO.successResponse(imFriendShipMapper.selectList(query));
+    }
+
+    @Override
+    public ResponseVO getRelation(GetRelationReq req) {
+        QueryWrapper<ImFriendShipEntity> query = new QueryWrapper<>();
+        query.eq("app_id",req.getAppId());
+        query.eq("from_id",req.getFromId());
+        query.eq("to_id",req.getToId());
+        ImFriendShipEntity entity = imFriendShipMapper.selectOne(query);
+        if(entity == null){
+            return ResponseVO.errorResponse(FriendShipErrorCode.REPEATSHIP_IS_NOT_EXIST);
+        }
+        return ResponseVO.successResponse(entity);
+    }
+
     @Transactional
     public ResponseVO doAddFriend(String fromId, FriendDto dto, Integer appId) {
         //A-B

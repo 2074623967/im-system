@@ -1,10 +1,7 @@
 package com.lld.im.service.friendship.service;
 
 import com.lld.im.common.ResponseVO;
-import com.lld.im.service.friendship.model.req.AddFriendReq;
-import com.lld.im.service.friendship.model.req.DeleteFriendReq;
-import com.lld.im.service.friendship.model.req.ImporFriendShipReq;
-import com.lld.im.service.friendship.model.req.UpdateFriendReq;
+import com.lld.im.service.friendship.model.req.*;
 
 public interface ImFriendShipService {
 
@@ -17,4 +14,8 @@ public interface ImFriendShipService {
     ResponseVO deleteFriend(DeleteFriendReq req);
 
     ResponseVO deleteAllFriend(DeleteFriendReq req);
+
+    ResponseVO getAllFriendShip(GetAllFriendShipReq req);
+
+    ResponseVO getRelation(GetRelationReq req);
 }
