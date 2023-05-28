@@ -12,4 +12,11 @@
         where app_id = #{appId}
           AND group_id = #{groupId}
     </select>
+
+    <select id="getJoinedGroupId" resultType="java.lang.Object">
+        select group_id
+        from im_group_member
+        where app_id = #{appId}
+          AND member_id = #{memberId}
+    </select>
 </mapper>

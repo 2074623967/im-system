@@ -1,6 +1,7 @@
 package com.lld.im.service.group.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.lld.im.common.ResponseVO;
 import com.lld.im.common.enums.GroupErrorCode;
@@ -12,6 +13,7 @@ import com.lld.im.service.group.dao.ImGroupEntity;
 import com.lld.im.service.group.dao.mapper.ImGroupMapper;
 import com.lld.im.service.group.model.req.*;
 import com.lld.im.service.group.model.resp.GetGroupResp;
+import com.lld.im.service.group.model.resp.GetJoinedGroupResp;
 import com.lld.im.service.group.model.resp.GetRoleInGroupResp;
 import com.lld.im.service.group.service.ImGroupMemberService;
 import com.lld.im.service.group.service.ImGroupService;
@@ -20,6 +22,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -168,7 +172,7 @@ public class ImGroupServiceImpl implements ImGroupService {
     @Override
     public ResponseVO getGroup(GetGroupReq req) {
         ResponseVO group = this.getGroup(req.getGroupId(), req.getAppId());
-        if(!group.isOk()){
+        if (!group.isOk()) {
             return group;
         }
         GetGroupResp getGroupResp = new GetGroupResp();
@@ -182,5 +186,41 @@ public class ImGroupServiceImpl implements ImGroupService {
             e.printStackTrace();
         }
         return ResponseVO.successResponse(getGroupResp);
+    }
+
+    /**
+     * @param req
+     * @return com.lld.im.common.ResponseVO
+     * 获取用户加入的群组
+     **/
+    @Override
+    public ResponseVO getJoinedGroup(GetJoinedGroupReq req) {
+        //获取所有加入的群id
+        ResponseVO<Collection<String>> memberJoinedGroup = imGroupMemberService.getMemberJoinedGroup(req);
+        if (memberJoinedGroup.isOk()) {
+            GetJoinedGroupResp resp = new GetJoinedGroupResp();
+            if (CollectionUtils.isEmpty(memberJoinedGroup.getData())) {
+                resp.setTotalCount(0);
+                resp.setGroupList(new ArrayList<>());
+                return ResponseVO.successResponse(resp);
+            }
+            QueryWrapper<ImGroupEntity> query = new QueryWrapper<>();
+            query.eq("app_id", req.getAppId());
+            query.in("group_id", memberJoinedGroup.getData());
+            if (CollectionUtils.isNotEmpty(req.getGroupType())) {
+                query.in("group_type", req.getGroupType());
+            }
+            //根据群id获取群信息
+            List<ImGroupEntity> groupList = imGroupMapper.selectList(query);
+            resp.setGroupList(groupList);
+            if (req.getLimit() == null) {
+                resp.setTotalCount(groupList.size());
+            } else {
+                resp.setTotalCount(imGroupMapper.selectCount(query));
+            }
+            return ResponseVO.successResponse(resp);
+        } else {
+            return memberJoinedGroup;
+        }
     }
 }

@@ -1,10 +1,7 @@
 package com.lld.im.service.group.controller;
 
 import com.lld.im.common.ResponseVO;
-import com.lld.im.service.group.model.req.CreateGroupReq;
-import com.lld.im.service.group.model.req.GetGroupReq;
-import com.lld.im.service.group.model.req.ImportGroupReq;
-import com.lld.im.service.group.model.req.UpdateGroupReq;
+import com.lld.im.service.group.model.req.*;
 import com.lld.im.service.group.service.ImGroupService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -49,5 +46,12 @@ public class ImGroupController {
     public ResponseVO getGroupInfo(@RequestBody @Validated GetGroupReq req, Integer appId)  {
         req.setAppId(appId);
         return imGroupService.getGroup(req);
+    }
+
+    @RequestMapping("/getJoinedGroup")
+    public ResponseVO getJoinedGroup(@RequestBody @Validated GetJoinedGroupReq req, Integer appId, String identifier)  {
+        req.setAppId(appId);
+        req.setOperater(identifier);
+        return imGroupService.getJoinedGroup(req);
     }
 }

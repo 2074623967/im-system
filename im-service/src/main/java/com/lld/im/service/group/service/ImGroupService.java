@@ -2,10 +2,7 @@ package com.lld.im.service.group.service;
 
 import com.lld.im.common.ResponseVO;
 import com.lld.im.service.group.dao.ImGroupEntity;
-import com.lld.im.service.group.model.req.CreateGroupReq;
-import com.lld.im.service.group.model.req.GetGroupReq;
-import com.lld.im.service.group.model.req.ImportGroupReq;
-import com.lld.im.service.group.model.req.UpdateGroupReq;
+import com.lld.im.service.group.model.req.*;
 
 public interface ImGroupService {
 
@@ -18,4 +15,6 @@ public interface ImGroupService {
     ResponseVO createGroup(CreateGroupReq req);
 
     ResponseVO getGroup(GetGroupReq req);
+
+    ResponseVO getJoinedGroup(GetJoinedGroupReq req);
 }

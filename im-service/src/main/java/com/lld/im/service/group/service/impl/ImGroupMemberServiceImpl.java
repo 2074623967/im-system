@@ -1,12 +1,15 @@
 package com.lld.im.service.group.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lld.im.common.ResponseVO;
 import com.lld.im.common.enums.GroupErrorCode;
 import com.lld.im.common.enums.GroupMemberRoleEnum;
 import com.lld.im.service.group.dao.ImGroupEntity;
 import com.lld.im.service.group.dao.ImGroupMemberEntity;
 import com.lld.im.service.group.dao.mapper.ImGroupMemberMapper;
+import com.lld.im.service.group.model.req.GetJoinedGroupReq;
 import com.lld.im.service.group.model.req.GroupMemberDto;
 import com.lld.im.service.group.model.req.ImportGroupMemberReq;
 import com.lld.im.service.group.model.resp.AddMemberResp;
@@ -20,8 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author tangcj
@@ -158,5 +160,24 @@ public class ImGroupMemberServiceImpl implements ImGroupMemberService {
     public ResponseVO<List<GroupMemberDto>> getGroupMember(String groupId, Integer appId) {
         List<GroupMemberDto> groupMember = imGroupMemberMapper.getGroupMember(appId, groupId);
         return ResponseVO.successResponse(groupMember);
+    }
+
+    @Override
+    public ResponseVO<Collection<String>> getMemberJoinedGroup(GetJoinedGroupReq req) {
+        if (req.getLimit() != null) {
+            Page<ImGroupMemberEntity> objectPage = new Page<>(req.getOffset(), req.getLimit());
+            QueryWrapper<ImGroupMemberEntity> query = new QueryWrapper<>();
+            query.eq("app_id", req.getAppId());
+            query.eq("member_id", req.getMemberId());
+            IPage<ImGroupMemberEntity> imGroupMemberEntityPage = imGroupMemberMapper.selectPage(objectPage, query);
+            Set<String> groupId = new HashSet<>();
+            List<ImGroupMemberEntity> records = imGroupMemberEntityPage.getRecords();
+            records.forEach(e -> {
+                groupId.add(e.getGroupId());
+            });
+            return ResponseVO.successResponse(groupId);
+        } else {
+            return ResponseVO.successResponse(imGroupMemberMapper.getJoinedGroupId(req.getAppId(), req.getMemberId()));
+        }
     }
 }

@@ -10,4 +10,6 @@ import java.util.List;
 public interface ImGroupMemberMapper extends BaseMapper<ImGroupMemberEntity> {
 
     List<GroupMemberDto> getGroupMember(@Param("appId") Integer appId,@Param("groupId") String groupId);
+
+    Object getJoinedGroupId(@Param("appId") Integer appId, @Param("memberId") String memberId);
 }
