@@ -1,9 +1,7 @@
 package com.lld.im.service.group.service;
 
 import com.lld.im.common.ResponseVO;
-import com.lld.im.service.group.model.req.GetJoinedGroupReq;
-import com.lld.im.service.group.model.req.GroupMemberDto;
-import com.lld.im.service.group.model.req.ImportGroupMemberReq;
+import com.lld.im.service.group.model.req.*;
 import com.lld.im.service.group.model.resp.GetRoleInGroupResp;
 
 import java.util.Collection;
@@ -22,4 +20,16 @@ public interface ImGroupMemberService {
     ResponseVO<Collection<String>> getMemberJoinedGroup(GetJoinedGroupReq req);
 
     ResponseVO transferGroupMember(String ownerId, String groupId, Integer appId);
+
+    ResponseVO addMember(AddGroupMemberReq req);
+
+    ResponseVO removeMember(RemoveGroupMemberReq req);
+
+    ResponseVO removeGroupMember(String groupId, Integer appId, String memberId);
+
+    ResponseVO exitGroup(ExitGroupReq req);
+
+    ResponseVO speak(SpeaMemberReq req);
+
+
 }
