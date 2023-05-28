@@ -68,4 +68,11 @@ public class ImGroupController {
         req.setOperater(identifier);
         return imGroupService.transferGroup(req);
     }
+
+    @RequestMapping("/forbidSendMessage")
+    public ResponseVO forbidSendMessage(@RequestBody @Validated MuteGroupReq req, Integer appId, String identifier)  {
+        req.setAppId(appId);
+        req.setOperater(identifier);
+        return imGroupService.muteGroup(req);
+    }
 }

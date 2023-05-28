@@ -420,7 +420,6 @@ public class ImGroupMemberServiceImpl implements ImGroupMemberService {
     }
 
     @Override
-
     public ResponseVO speak(SpeaMemberReq req) {
         ResponseVO<ImGroupEntity> groupResp = imGroupService.getGroup(req.getGroupId(), req.getAppId());
         if (!groupResp.isOk()) {
