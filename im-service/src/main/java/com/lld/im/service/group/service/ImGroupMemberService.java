@@ -29,7 +29,7 @@ public interface ImGroupMemberService {
 
     ResponseVO exitGroup(ExitGroupReq req);
 
+    ResponseVO updateGroupMember(UpdateGroupMemberReq req);
+
     ResponseVO speak(SpeaMemberReq req);
-
-
 }

@@ -3,10 +3,12 @@ package com.lld.im.service.group.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lld.im.common.ResponseVO;
 import com.lld.im.common.enums.GroupErrorCode;
 import com.lld.im.common.enums.GroupMemberRoleEnum;
+import com.lld.im.common.enums.GroupStatusEnum;
 import com.lld.im.common.enums.GroupTypeEnum;
 import com.lld.im.common.exception.ApplicationException;
 import com.lld.im.service.group.dao.ImGroupEntity;
@@ -348,6 +350,72 @@ public class ImGroupMemberServiceImpl implements ImGroupMemberService {
         wrapper.eq("group_id", req.getGroupId());
         wrapper.eq("member_id", req.getOperater());
         imGroupMemberMapper.update(update, wrapper);
+        return ResponseVO.successResponse();
+    }
+
+    @Override
+    public ResponseVO updateGroupMember(UpdateGroupMemberReq req) {
+        boolean isadmin = false;
+        ResponseVO<ImGroupEntity> group = imGroupService.getGroup(req.getGroupId(), req.getAppId());
+        if (!group.isOk()) {
+            return group;
+        }
+        ImGroupEntity groupData = group.getData();
+        if (groupData.getStatus() == GroupStatusEnum.DESTROY.getCode()) {
+            throw new ApplicationException(GroupErrorCode.GROUP_IS_DESTROY);
+        }
+        //是否是自己修改自己的资料
+        boolean isMeOperate = req.getOperater().equals(req.getMemberId());
+        if (!isadmin) {
+            //昵称只能自己修改 权限只能群主或管理员修改
+            if (StringUtils.isBlank(req.getAlias()) && !isMeOperate) {
+                return ResponseVO.errorResponse(GroupErrorCode.THIS_OPERATE_NEED_ONESELF);
+            }
+            //私有群不能设置管理员
+            if (groupData.getGroupType() == GroupTypeEnum.PRIVATE.getCode() &&
+                    req.getRole() != null && (req.getRole() == GroupMemberRoleEnum.MAMAGER.getCode() ||
+                    req.getRole() == GroupMemberRoleEnum.OWNER.getCode())) {
+                return ResponseVO.errorResponse(GroupErrorCode.THIS_OPERATE_NEED_MANAGER_ROLE);
+            }
+            //如果要修改权限相关的则走下面的逻辑
+            if(req.getRole() != null){
+                //获取被操作人的是否在群内
+                ResponseVO<GetRoleInGroupResp> roleInGroupOne = this.getRoleInGroupOne(req.getGroupId(), req.getMemberId(), req.getAppId());
+                if(!roleInGroupOne.isOk()){
+                    return roleInGroupOne;
+                }
+                //获取操作人权限
+                ResponseVO<GetRoleInGroupResp> operateRoleInGroupOne = this.getRoleInGroupOne(req.getGroupId(), req.getOperater(), req.getAppId());
+                if(!operateRoleInGroupOne.isOk()){
+                    return operateRoleInGroupOne;
+                }
+                GetRoleInGroupResp data = operateRoleInGroupOne.getData();
+                Integer roleInfo = data.getRole();
+                boolean isOwner = roleInfo == GroupMemberRoleEnum.OWNER.getCode();
+                boolean isManager = roleInfo == GroupMemberRoleEnum.MAMAGER.getCode();
+                //不是管理员不能修改权限
+                if(req.getRole() != null && !isOwner && !isManager){
+                    return ResponseVO.errorResponse(GroupErrorCode.THIS_OPERATE_NEED_MANAGER_ROLE);
+                }
+                //管理员只有群主能够设置
+                if(req.getRole() != null && req.getRole() == GroupMemberRoleEnum.MAMAGER.getCode() && !isOwner){
+                    return ResponseVO.errorResponse(GroupErrorCode.THIS_OPERATE_NEED_OWNER_ROLE);
+                }
+            }
+        }
+        ImGroupMemberEntity update = new ImGroupMemberEntity();
+        if (StringUtils.isNotBlank(req.getAlias())) {
+            update.setAlias(req.getAlias());
+        }
+        //不能直接修改为群主
+        if(req.getRole() != null && req.getRole() != GroupMemberRoleEnum.OWNER.getCode()){
+            update.setRole(req.getRole());
+        }
+        UpdateWrapper<ImGroupMemberEntity> objectUpdateWrapper = new UpdateWrapper<>();
+        objectUpdateWrapper.eq("app_id", req.getAppId());
+        objectUpdateWrapper.eq("member_id", req.getMemberId());
+        objectUpdateWrapper.eq("group_id", req.getGroupId());
+        imGroupMemberMapper.update(update, objectUpdateWrapper);
         return ResponseVO.successResponse();
     }
 
