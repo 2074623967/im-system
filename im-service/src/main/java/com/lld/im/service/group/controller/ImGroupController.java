@@ -54,4 +54,18 @@ public class ImGroupController {
         req.setOperater(identifier);
         return imGroupService.getJoinedGroup(req);
     }
+
+    @RequestMapping("/destroyGroup")
+    public ResponseVO destroyGroup(@RequestBody @Validated DestroyGroupReq req, Integer appId, String identifier)  {
+        req.setAppId(appId);
+        req.setOperater(identifier);
+        return imGroupService.destroyGroup(req);
+    }
+
+    @RequestMapping("/transferGroup")
+    public ResponseVO transferGroup(@RequestBody @Validated TransferGroupReq req, Integer appId, String identifier)  {
+        req.setAppId(appId);
+        req.setOperater(identifier);
+        return imGroupService.transferGroup(req);
+    }
 }
