@@ -13,7 +13,6 @@ import java.util.List;
  * @author tangcj
  * @date 2023/05/27 12:00
  **/
-@Mapper
 public interface ImFriendShipMapper extends BaseMapper<ImFriendShipEntity> {
 
 

@@ -30,7 +30,7 @@
     <netty.version>4.1.35.Final</netty.version>
     <feign.version>8.18.0</feign.version>
     <logback-classic>1.2.11</logback-classic>
-    <logback-core>1.0.9</logback-core>
+    <logback-core>1.2.11</logback-core>
     <logback-access>1.4.6</logback-access>
     <fastjson.version>2.0.25</fastjson.version>
     <lombok-version>1.18.26</lombok-version>
@@ -39,9 +39,25 @@
   <dependencies>
     <!-- 日志框架 -->
     <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.7.25</version>
+    </dependency>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>1.2.17</version>
+    </dependency>
+    <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
       <version>${logback-classic}</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>logback-core</artifactId>
+          <groupId>ch.qos.logback</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>ch.qos.logback</groupId>
@@ -52,6 +68,12 @@
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-access</artifactId>
       <version>${logback-access}</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>logback-core</artifactId>
+          <groupId>ch.qos.logback</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <!-- fastjson -->
