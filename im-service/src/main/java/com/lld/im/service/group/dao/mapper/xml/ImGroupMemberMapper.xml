@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lld.im.service.group.dao.mapper.ImGroupMemberMapper">
-
+    <select id="getGroupMember" resultType="com.lld.im.service.group.model.req.GroupMemberDto">
+        select member_id,
+               speak_date,
+               role,
+               alias,
+               join_time,
+               join_type
+        from im_group_member
+        where app_id = #{appId}
+          AND group_id = #{groupId}
+    </select>
 </mapper>

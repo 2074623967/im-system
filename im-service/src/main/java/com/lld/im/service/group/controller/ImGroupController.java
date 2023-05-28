@@ -1,7 +1,10 @@
 package com.lld.im.service.group.controller;
 
 import com.lld.im.common.ResponseVO;
+import com.lld.im.service.group.model.req.CreateGroupReq;
+import com.lld.im.service.group.model.req.GetGroupReq;
 import com.lld.im.service.group.model.req.ImportGroupReq;
+import com.lld.im.service.group.model.req.UpdateGroupReq;
 import com.lld.im.service.group.service.ImGroupService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,5 +29,25 @@ public class ImGroupController {
         req.setAppId(appId);
         req.setOperater(identifier);
         return imGroupService.importGroup(req);
+    }
+
+    @RequestMapping("/createGroup")
+    public ResponseVO createGroup(@RequestBody @Validated CreateGroupReq req, Integer appId, String identifier)  {
+        req.setAppId(appId);
+        req.setOperater(identifier);
+        return imGroupService.createGroup(req);
+    }
+
+    @RequestMapping("/update")
+    public ResponseVO update(@RequestBody @Validated UpdateGroupReq req, Integer appId, String identifier)  {
+        req.setAppId(appId);
+        req.setOperater(identifier);
+        return imGroupService.updateBaseGroupInfo(req);
+    }
+
+    @RequestMapping("/getGroupInfo")
+    public ResponseVO getGroupInfo(@RequestBody @Validated GetGroupReq req, Integer appId)  {
+        req.setAppId(appId);
+        return imGroupService.getGroup(req);
     }
 }

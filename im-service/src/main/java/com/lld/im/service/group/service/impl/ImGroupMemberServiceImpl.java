@@ -10,6 +10,7 @@ import com.lld.im.service.group.dao.mapper.ImGroupMemberMapper;
 import com.lld.im.service.group.model.req.GroupMemberDto;
 import com.lld.im.service.group.model.req.ImportGroupMemberReq;
 import com.lld.im.service.group.model.resp.AddMemberResp;
+import com.lld.im.service.group.model.resp.GetRoleInGroupResp;
 import com.lld.im.service.group.service.ImGroupMemberService;
 import com.lld.im.service.group.service.ImGroupService;
 import com.lld.im.service.user.dao.ImUserDataEntity;
@@ -70,20 +71,19 @@ public class ImGroupMemberServiceImpl implements ImGroupMemberService {
         }
         return ResponseVO.successResponse(resp);
     }
-   /**
-    * @author tangcj
-    * @date 2023/05/28 09:41
-    * @param groupId
-    * @param appId
-    * @param dto
-    * @return com.lld.im.common.ResponseVO
-    * 添加群成员，内部调用
-    **/
+
+    /**
+     * @param groupId
+     * @param appId
+     * @param dto
+     * @return com.lld.im.common.ResponseVO
+     * 添加群成员，内部调用
+     **/
     @Override
     @Transactional
     public ResponseVO addGroupMember(String groupId, Integer appId, GroupMemberDto dto) {
         ResponseVO<ImUserDataEntity> singleUserInfo = imUserService.getSingleUserInfo(dto.getMemberId(), appId);
-        if(!singleUserInfo.isOk()){
+        if (!singleUserInfo.isOk()) {
             return singleUserInfo;
         }
         if (dto.getRole() != null && GroupMemberRoleEnum.OWNER.getCode() == dto.getRole()) {
@@ -127,5 +127,36 @@ public class ImGroupMemberServiceImpl implements ImGroupMemberService {
         }
         return ResponseVO.errorResponse(GroupErrorCode.USER_IS_JOINED_GROUP);
 
+    }
+
+    /**
+     * @param groupId
+     * @param memberId
+     * @param appId
+     * @return com.lld.im.common.ResponseVO<com.lld.im.service.group.model.resp.GetRoleInGroupResp>
+     * 查询用户在群内的角色
+     **/
+    @Override
+    public ResponseVO<GetRoleInGroupResp> getRoleInGroupOne(String groupId, String memberId, Integer appId) {
+        GetRoleInGroupResp resp = new GetRoleInGroupResp();
+        QueryWrapper<ImGroupMemberEntity> queryOwner = new QueryWrapper<>();
+        queryOwner.eq("group_id", groupId);
+        queryOwner.eq("app_id", appId);
+        queryOwner.eq("member_id", memberId);
+        ImGroupMemberEntity imGroupMemberEntity = imGroupMemberMapper.selectOne(queryOwner);
+        if (imGroupMemberEntity == null || imGroupMemberEntity.getRole() == GroupMemberRoleEnum.LEAVE.getCode()) {
+            return ResponseVO.errorResponse(GroupErrorCode.MEMBER_IS_NOT_JOINED_GROUP);
+        }
+        resp.setSpeakDate(imGroupMemberEntity.getSpeakDate());
+        resp.setGroupMemberId(imGroupMemberEntity.getGroupMemberId());
+        resp.setMemberId(imGroupMemberEntity.getMemberId());
+        resp.setRole(imGroupMemberEntity.getRole());
+        return ResponseVO.successResponse(resp);
+    }
+
+    @Override
+    public ResponseVO<List<GroupMemberDto>> getGroupMember(String groupId, Integer appId) {
+        List<GroupMemberDto> groupMember = imGroupMemberMapper.getGroupMember(appId, groupId);
+        return ResponseVO.successResponse(groupMember);
     }
 }
