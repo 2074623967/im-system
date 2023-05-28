@@ -1,0 +1,86 @@
+2023-05-27 23:17:15 -Starting ServiceApplication on LAPTOP-CUHA0UV5 with PID 32520 (D:\ideadaima\mukewang\即时通讯\im-system\im-service\target\classes started by tangcj in D:\ideadaima\mukewang\即时通讯\im-system)
+2023-05-27 23:17:15 -The following profiles are active: dev
+2023-05-27 23:17:15 -Multiple Spring Data modules found, entering strict repository configuration mode!
+2023-05-27 23:17:15 -Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2023-05-27 23:17:15 -Finished Spring Data repository scanning in 12ms. Found 0 Redis repository interfaces.
+2023-05-27 23:17:15 -No MyBatis mapper was found in '[com.lld.im.service]' package. Please check your configuration.
+2023-05-27 23:17:16 -Tomcat initialized with port(s): 8000 (http)
+2023-05-27 23:17:16 -Initializing ProtocolHandler ["http-nio-8000"]
+2023-05-27 23:17:16 -Starting service [Tomcat]
+2023-05-27 23:17:16 -Starting Servlet engine: [Apache Tomcat/9.0.39]
+2023-05-27 23:17:16 -Initializing Spring embedded WebApplicationContext
+2023-05-27 23:17:16 -Root WebApplicationContext: initialization completed in 1073 ms
+2023-05-27 23:17:16 -Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'imFriendShipController': Unsatisfied dependency expressed through field 'imFriendShipService'; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'imFriendShipServiceImpl': Injection of resource dependencies failed; nested exception is org.springframework.beans.factory.NoSuchBeanDefinitionException: No qualifying bean of type 'com.lld.im.service.friendship.dao.mapper.ImFriendShipMapper' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {@javax.annotation.Resource(shareable=true, lookup=, name=, description=, authenticationType=CONTAINER, type=class java.lang.Object, mappedName=)}
+2023-05-27 23:17:16 -Stopping service [Tomcat]
+2023-05-27 23:17:16 -
+
+Error starting ApplicationContext. To display the conditions report re-run your application with 'debug' enabled.
+2023-05-27 23:17:16 -
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Field imFriendShipService in com.lld.im.service.friendship.controller.ImFriendShipController required a bean of type 'com.lld.im.service.friendship.dao.mapper.ImFriendShipMapper' that could not be found.
+
+The injection point has the following annotations:
+	- @org.springframework.beans.factory.annotation.Autowired(required=true)
+
+
+Action:
+
+Consider defining a bean of type 'com.lld.im.service.friendship.dao.mapper.ImFriendShipMapper' in your configuration.
+
+2023-05-27 23:20:39 -Starting ServiceApplication on LAPTOP-CUHA0UV5 with PID 19096 (D:\ideadaima\mukewang\即时通讯\im-system\im-service\target\classes started by tangcj in D:\ideadaima\mukewang\即时通讯\im-system)
+2023-05-27 23:20:39 -The following profiles are active: dev
+2023-05-27 23:20:39 -Multiple Spring Data modules found, entering strict repository configuration mode!
+2023-05-27 23:20:39 -Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2023-05-27 23:20:39 -Finished Spring Data repository scanning in 15ms. Found 0 Redis repository interfaces.
+2023-05-27 23:20:39 -No MyBatis mapper was found in '[com.lld.im.service.*.mapper]' package. Please check your configuration.
+2023-05-27 23:20:39 -Tomcat initialized with port(s): 8000 (http)
+2023-05-27 23:20:39 -Initializing ProtocolHandler ["http-nio-8000"]
+2023-05-27 23:20:39 -Starting service [Tomcat]
+2023-05-27 23:20:39 -Starting Servlet engine: [Apache Tomcat/9.0.39]
+2023-05-27 23:20:39 -Initializing Spring embedded WebApplicationContext
+2023-05-27 23:20:39 -Root WebApplicationContext: initialization completed in 729 ms
+2023-05-27 23:20:39 -Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'imFriendShipController': Unsatisfied dependency expressed through field 'imFriendShipService'; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'imFriendShipServiceImpl': Injection of resource dependencies failed; nested exception is org.springframework.beans.factory.NoSuchBeanDefinitionException: No qualifying bean of type 'com.lld.im.service.friendship.dao.mapper.ImFriendShipMapper' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {@javax.annotation.Resource(shareable=true, lookup=, name=, description=, authenticationType=CONTAINER, type=class java.lang.Object, mappedName=)}
+2023-05-27 23:20:39 -Stopping service [Tomcat]
+2023-05-27 23:20:39 -
+
+Error starting ApplicationContext. To display the conditions report re-run your application with 'debug' enabled.
+2023-05-27 23:20:39 -
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Field imFriendShipService in com.lld.im.service.friendship.controller.ImFriendShipController required a bean of type 'com.lld.im.service.friendship.dao.mapper.ImFriendShipMapper' that could not be found.
+
+The injection point has the following annotations:
+	- @org.springframework.beans.factory.annotation.Autowired(required=true)
+
+
+Action:
+
+Consider defining a bean of type 'com.lld.im.service.friendship.dao.mapper.ImFriendShipMapper' in your configuration.
+
+2023-05-27 23:20:54 -Starting ServiceApplication on LAPTOP-CUHA0UV5 with PID 31096 (D:\ideadaima\mukewang\即时通讯\im-system\im-service\target\classes started by tangcj in D:\ideadaima\mukewang\即时通讯\im-system)
+2023-05-27 23:20:54 -The following profiles are active: dev
+2023-05-27 23:20:54 -Multiple Spring Data modules found, entering strict repository configuration mode!
+2023-05-27 23:20:54 -Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2023-05-27 23:20:54 -Finished Spring Data repository scanning in 21ms. Found 0 Redis repository interfaces.
+2023-05-27 23:20:55 -Tomcat initialized with port(s): 8000 (http)
+2023-05-27 23:20:55 -Initializing ProtocolHandler ["http-nio-8000"]
+2023-05-27 23:20:55 -Starting service [Tomcat]
+2023-05-27 23:20:55 -Starting Servlet engine: [Apache Tomcat/9.0.39]
+2023-05-27 23:20:55 -Initializing Spring embedded WebApplicationContext
+2023-05-27 23:20:55 -Root WebApplicationContext: initialization completed in 756 ms
+2023-05-27 23:20:56 -Initializing ExecutorService 'applicationTaskExecutor'
+2023-05-27 23:20:56 -Starting ProtocolHandler ["http-nio-8000"]
+2023-05-27 23:20:56 -Tomcat started on port(s): 8000 (http) with context path ''
+2023-05-27 23:20:56 -Started ServiceApplication in 2.544 seconds (JVM running for 3.219)
+2023-05-27 23:21:29 -Shutting down ExecutorService 'applicationTaskExecutor'

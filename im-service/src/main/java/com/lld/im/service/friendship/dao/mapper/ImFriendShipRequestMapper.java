@@ -8,6 +8,5 @@ import org.apache.ibatis.annotations.Mapper;
  * @author tangcj
  * @date 2023/05/27 19:52
  **/
-@Mapper
 public interface ImFriendShipRequestMapper extends BaseMapper<ImFriendShipRequestEntity> {
 }
