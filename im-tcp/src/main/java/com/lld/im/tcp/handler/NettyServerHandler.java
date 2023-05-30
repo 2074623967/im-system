@@ -33,14 +33,15 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Message> {
                     new TypeReference<LoginPack>() {
                     }.getType());
             String userId = loginPack.getUserId();
-            ctx.channel().attr(AttributeKey.valueOf("userId")).set(userId);
+            ctx.channel().attr(AttributeKey.valueOf(Constants.UserId)).set(userId);
+            ctx.channel().attr(AttributeKey.valueOf(Constants.AppId)).set(msg.getMessageHeader().getAppId());
+            ctx.channel().attr(AttributeKey.valueOf(Constants.ClientType)).set(msg.getMessageHeader().getClientType());
             //Redis map
             UserSession userSession = new UserSession();
             userSession.setAppId(msg.getMessageHeader().getAppId());
             userSession.setClientType(msg.getMessageHeader().getClientType());
             userSession.setUserId(loginPack.getUserId());
             userSession.setConnectState(ImConnectStatusEnum.ONLINE_STATUS.getCode());
-            //将channel存起来
             RedissonClient redissonClient = RedisManager.getRedissonClient();
             RMap<String, String> map = redissonClient.
                     getMap(msg.getMessageHeader().getAppId() +
@@ -49,7 +50,26 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Message> {
             map.put(msg.getMessageHeader().getClientType() +
                             ":" + msg.getMessageHeader().getImei(),
                     JSONObject.toJSONString(userSession));
-            SessionSocketHolder.put(loginPack.getUserId(), (NioSocketChannel) ctx.channel());
+            //将channel存起来
+            SessionSocketHolder.put(msg.getMessageHeader().getAppId(),
+                    loginPack.getUserId(),
+                    msg.getMessageHeader().getClientType(),
+                    msg.getMessageHeader().getImei(),
+                    (NioSocketChannel) ctx.channel());
+
+        } else if (command == SystemCommand.LOGOUT.getCommand()) {
+            //删除session
+            //redis 删除
+            String userId = String.valueOf(ctx.channel().attr(AttributeKey.valueOf(Constants.UserId)).get());
+            Integer appId = (Integer) ctx.channel().attr(AttributeKey.valueOf(Constants.AppId)).get();
+            Integer clientType = (Integer) ctx.channel().attr(AttributeKey.valueOf(Constants.ClientType)).get();
+            SessionSocketHolder.remove(appId, userId, clientType);
+            RedissonClient redissonClient = RedisManager.getRedissonClient();
+            RMap<Object, Object> map = redissonClient.getMap(appId +
+                    Constants.RedisConstants.UserSessionConstants +
+                    userId);
+            map.remove(clientType);
+            ctx.close();
         } else {
 
         }
