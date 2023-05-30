@@ -3,6 +3,7 @@ package com.lld.im.tcp.server;
 import com.lld.im.codec.MessageDecoder;
 import com.lld.im.codec.MessageEecoder;
 import com.lld.im.codec.config.BootstrapConfig;
+import com.lld.im.tcp.handler.HeartBeatHandler;
 import com.lld.im.tcp.handler.NettyServerHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
@@ -36,7 +37,7 @@ public class LimServer {
         this.mainGroup = new NioEventLoopGroup(config.getBossThreadSize());
         this.subGroup = new NioEventLoopGroup(config.getWorkThreadSize());
         this.server = new ServerBootstrap();
-        this.server.group(this.mainGroup,this. subGroup)
+        this.server.group(this.mainGroup, this.subGroup)
                 .channel(NioServerSocketChannel.class)
                 .option(ChannelOption.SO_BACKLOG, 10240) // 服务端可连接队列大小
                 .option(ChannelOption.SO_REUSEADDR, true) // 参数表示允许重复使用本地地址和端口
@@ -48,9 +49,10 @@ public class LimServer {
                     protected void initChannel(SocketChannel ch) throws Exception {
                         ch.pipeline().addLast(new MessageDecoder());
                         ch.pipeline().addLast(new MessageEecoder());
-//                        ch.pipeline().addLast(new IdleStateHandler(
-//                                0, 0,
-//                                10));
+                        ch.pipeline().addLast(new IdleStateHandler(
+                                0, 0,
+                                1));
+                        ch.pipeline().addLast(new HeartBeatHandler(config.getHeartBeatTime()));
                         ch.pipeline().addLast(new NettyServerHandler());
                     }
                 });
