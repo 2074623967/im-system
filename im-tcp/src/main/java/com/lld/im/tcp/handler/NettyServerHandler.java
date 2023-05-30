@@ -5,12 +5,18 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.lld.im.codec.pack.LoginPack;
 import com.lld.im.codec.proto.Message;
+import com.lld.im.common.constant.Constants;
+import com.lld.im.common.enums.ImConnectStatusEnum;
 import com.lld.im.common.enums.command.SystemCommand;
+import com.lld.im.common.model.UserSession;
+import com.lld.im.tcp.redis.RedisManager;
 import com.lld.im.tcp.utils.SessionSocketHolder;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.AttributeKey;
+import org.redisson.api.RMap;
+import org.redisson.api.RedissonClient;
 
 /**
  * @author tangcj
@@ -28,8 +34,22 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Message> {
                     }.getType());
             String userId = loginPack.getUserId();
             ctx.channel().attr(AttributeKey.valueOf("userId")).set(userId);
+            //Redis map
+            UserSession userSession = new UserSession();
+            userSession.setAppId(msg.getMessageHeader().getAppId());
+            userSession.setClientType(msg.getMessageHeader().getClientType());
+            userSession.setUserId(loginPack.getUserId());
+            userSession.setConnectState(ImConnectStatusEnum.ONLINE_STATUS.getCode());
             //将channel存起来
-            SessionSocketHolder.put(userId, (NioSocketChannel) ctx.channel());
+            RedissonClient redissonClient = RedisManager.getRedissonClient();
+            RMap<String, String> map = redissonClient.
+                    getMap(msg.getMessageHeader().getAppId() +
+                            Constants.RedisConstants.UserSessionConstants +
+                            loginPack.getUserId());
+            map.put(msg.getMessageHeader().getClientType() +
+                            ":" + msg.getMessageHeader().getImei(),
+                    JSONObject.toJSONString(userSession));
+            SessionSocketHolder.put(loginPack.getUserId(), (NioSocketChannel) ctx.channel());
         } else {
 
         }
