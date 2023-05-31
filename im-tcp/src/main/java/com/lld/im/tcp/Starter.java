@@ -3,14 +3,19 @@ package com.lld.im.tcp;
 import com.lld.im.codec.config.BootstrapConfig;
 import com.lld.im.tcp.reciver.MessageReciver;
 import com.lld.im.tcp.redis.RedisManager;
+import com.lld.im.tcp.register.RegistryZK;
+import com.lld.im.tcp.register.ZKit;
 import com.lld.im.tcp.server.LimServer;
 import com.lld.im.tcp.server.LimWebSocketServer;
 import com.lld.im.tcp.utils.MqFactory;
+import org.I0Itec.zkclient.ZkClient;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 /**
  * 启动类
@@ -42,10 +47,20 @@ public class Starter {
             RedisManager.init(bootstrapConfig);
             MqFactory.init(bootstrapConfig.getLim().getRabbitmq());
             MessageReciver.init();
+            registerZK(bootstrapConfig);
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(500);
         }
+    }
+
+    private static void registerZK(BootstrapConfig config) throws UnknownHostException {
+        String hostAddress = InetAddress.getLocalHost().getHostAddress();
+        ZkClient zkClient = new ZkClient(config.getLim().getZkConfig().getZkAddr(), config.getLim().getZkConfig().getZkConnectTimeOut());
+        ZKit zkit = new ZKit(zkClient);
+        RegistryZK registryZKit = new RegistryZK(zkit, hostAddress, config.getLim());
+        Thread thread = new Thread(registryZKit);
+        thread.start();
     }
 
 }
