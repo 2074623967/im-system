@@ -17,12 +17,24 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.AttributeKey;
 import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.net.InetAddress;
 
 /**
  * @author tangcj
  * @date 2023/05/30 16:07
  **/
 public class NettyServerHandler extends SimpleChannelInboundHandler<Message> {
+
+    private final static Logger logger = LoggerFactory.getLogger(NettyServerHandler.class.getName());
+
+    private Integer brokerId;
+
+    public NettyServerHandler(Integer brokerId) {
+        this.brokerId = brokerId;
+    }
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, Message msg) throws Exception {
@@ -42,6 +54,13 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Message> {
             userSession.setClientType(msg.getMessageHeader().getClientType());
             userSession.setUserId(loginPack.getUserId());
             userSession.setConnectState(ImConnectStatusEnum.ONLINE_STATUS.getCode());
+            userSession.setBrokerId(brokerId);
+            try {
+                InetAddress localHost = InetAddress.getLocalHost();
+                userSession.setBrokerHost(localHost.getHostAddress());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             RedissonClient redissonClient = RedisManager.getRedissonClient();
             RMap<String, String> map = redissonClient.
                     getMap(msg.getMessageHeader().getAppId() +

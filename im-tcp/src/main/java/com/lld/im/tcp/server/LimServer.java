@@ -53,7 +53,7 @@ public class LimServer {
                                 0, 0,
                                 1));
                         ch.pipeline().addLast(new HeartBeatHandler(config.getHeartBeatTime()));
-                        ch.pipeline().addLast(new NettyServerHandler());
+                        ch.pipeline().addLast(new NettyServerHandler(config.getBrokerId()));
                     }
                 });
     }
