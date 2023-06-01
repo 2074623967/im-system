@@ -8,6 +8,7 @@ import com.lld.im.codec.proto.Message;
 import com.lld.im.common.constant.Constants;
 import com.lld.im.common.enums.ImConnectStatusEnum;
 import com.lld.im.common.enums.command.SystemCommand;
+import com.lld.im.common.model.UserClientDto;
 import com.lld.im.common.model.UserSession;
 import com.lld.im.tcp.redis.RedisManager;
 import com.lld.im.tcp.utils.SessionSocketHolder;
@@ -16,6 +17,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.AttributeKey;
 import org.redisson.api.RMap;
+import org.redisson.api.RTopic;
 import org.redisson.api.RedissonClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +50,7 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Message> {
             ctx.channel().attr(AttributeKey.valueOf(Constants.UserId)).set(userId);
             ctx.channel().attr(AttributeKey.valueOf(Constants.AppId)).set(msg.getMessageHeader().getAppId());
             ctx.channel().attr(AttributeKey.valueOf(Constants.ClientType)).set(msg.getMessageHeader().getClientType());
+            ctx.channel().attr(AttributeKey.valueOf(Constants.Imei)).set(msg.getMessageHeader().getImei());
             //Redis map
             UserSession userSession = new UserSession();
             userSession.setAppId(msg.getMessageHeader().getAppId());
@@ -75,6 +78,13 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Message> {
                     msg.getMessageHeader().getClientType(),
                     msg.getMessageHeader().getImei(),
                     (NioSocketChannel) ctx.channel());
+            UserClientDto dto = new UserClientDto();
+            dto.setImei(msg.getMessageHeader().getImei());
+            dto.setUserId(loginPack.getUserId());
+            dto.setClientType(msg.getMessageHeader().getClientType());
+            dto.setAppId(msg.getMessageHeader().getAppId());
+            RTopic topic = redissonClient.getTopic(Constants.RedisConstants.UserLoginChannel);
+            topic.publish(JSONObject.toJSONString(dto));
 
         } else if (command == SystemCommand.LOGOUT.getCommand()) {
             //删除session
