@@ -5,6 +5,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.lld.im.codec.pack.group.CreateGroupPack;
+import com.lld.im.codec.pack.group.DestroyGroupPack;
+import com.lld.im.codec.pack.group.UpdateGroupInfoPack;
 import com.lld.im.common.ResponseVO;
 import com.lld.im.common.config.AppConfig;
 import com.lld.im.common.constant.Constants;
@@ -12,7 +15,9 @@ import com.lld.im.common.enums.GroupErrorCode;
 import com.lld.im.common.enums.GroupMemberRoleEnum;
 import com.lld.im.common.enums.GroupStatusEnum;
 import com.lld.im.common.enums.GroupTypeEnum;
+import com.lld.im.common.enums.command.GroupEventCommand;
 import com.lld.im.common.exception.ApplicationException;
+import com.lld.im.common.model.ClientInfo;
 import com.lld.im.service.group.dao.ImGroupEntity;
 import com.lld.im.service.group.dao.mapper.ImGroupMapper;
 import com.lld.im.service.group.model.callback.DestroyGroupCallbackDto;
@@ -23,6 +28,8 @@ import com.lld.im.service.group.model.resp.GetRoleInGroupResp;
 import com.lld.im.service.group.service.ImGroupMemberService;
 import com.lld.im.service.group.service.ImGroupService;
 import com.lld.im.service.utils.CallbackService;
+import com.lld.im.service.utils.GroupMessageProducer;
+import com.lld.im.service.utils.MessageProducer;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,6 +61,9 @@ public class ImGroupServiceImpl implements ImGroupService {
 
     @Resource
     private CallbackService callbackService;
+
+    @Resource
+    private GroupMessageProducer groupMessageProducer;
 
     @Override
     public ResponseVO importGroup(ImportGroupReq req) {
@@ -143,6 +153,10 @@ public class ImGroupServiceImpl implements ImGroupService {
             callbackService.callback(req.getAppId(), Constants.CallbackCommand.UpdateGroupAfter,
                     JSONObject.toJSONString(imGroupMapper.selectOne(query)));
         }
+        UpdateGroupInfoPack pack = new UpdateGroupInfoPack();
+        BeanUtils.copyProperties(req, pack);
+        groupMessageProducer.producer(req.getOperater(), GroupEventCommand.UPDATED_GROUP, pack,
+                new ClientInfo(req.getAppId(), req.getClientType(), req.getImei()));
         return ResponseVO.successResponse();
     }
 
@@ -186,6 +200,10 @@ public class ImGroupServiceImpl implements ImGroupService {
             callbackService.callback(req.getAppId(), Constants.CallbackCommand.CreateGroupAfter,
                     JSONObject.toJSONString(imGroupEntity));
         }
+        CreateGroupPack createGroupPack = new CreateGroupPack();
+        BeanUtils.copyProperties(imGroupEntity, createGroupPack);
+        groupMessageProducer.producer(req.getOperater(), GroupEventCommand.CREATED_GROUP, createGroupPack,
+                new ClientInfo(req.getAppId(), req.getClientType(), req.getImei()));
         return ResponseVO.successResponse();
     }
 
@@ -285,6 +303,10 @@ public class ImGroupServiceImpl implements ImGroupService {
                     , Constants.CallbackCommand.DestoryGroupAfter,
                     JSONObject.toJSONString(dto));
         }
+        DestroyGroupPack pack = new DestroyGroupPack();
+        pack.setGroupId(req.getGroupId());
+        groupMessageProducer.producer(req.getOperater(), GroupEventCommand.DESTROY_GROUP, pack,
+                new ClientInfo(req.getAppId(), req.getClientType(), req.getImei()));
         return ResponseVO.successResponse();
     }
 
