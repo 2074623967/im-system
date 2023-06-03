@@ -1,7 +1,10 @@
 package com.lld.im.tcp.reciver;
 
+import com.alibaba.fastjson.JSONObject;
 import com.lld.im.codec.proto.MessagePack;
 import com.lld.im.common.constant.Constants;
+import com.lld.im.tcp.reciver.process.BaseProcess;
+import com.lld.im.tcp.reciver.process.ProcessFactory;
 import com.lld.im.tcp.utils.MqFactory;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
@@ -31,15 +34,20 @@ public class MessageReciver {
             channel.queueBind(Constants.RabbitConstants.MessageService2Im + brokerId,
                     Constants.RabbitConstants.MessageService2Im, brokerId);
             channel.basicConsume(Constants.RabbitConstants
-                            .MessageService2Im, false,
+                            .MessageService2Im+ brokerId, false,
                     new DefaultConsumer(channel) {
                         @Override
                         public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
                             try {
                                 String msgStr = new String(body);
                                 log.info(msgStr);
+                                MessagePack messagePack = JSONObject.parseObject(msgStr, MessagePack.class);
+                                BaseProcess messageProcess = ProcessFactory.getMessageProcess(messagePack.getCommand());
+                                messageProcess.process(messagePack);
+                                channel.basicAck(envelope.getDeliveryTag(), false);
                             } catch (Exception e) {
                                 e.printStackTrace();
+                                channel.basicNack(envelope.getDeliveryTag(), false, false);
                             }
                         }
                     }
