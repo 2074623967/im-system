@@ -1,11 +1,15 @@
 package com.lld.im.service.group.service.impl;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lld.im.common.ResponseVO;
+import com.lld.im.common.config.AppConfig;
+import com.lld.im.common.constant.Constants;
 import com.lld.im.common.enums.GroupErrorCode;
 import com.lld.im.common.enums.GroupMemberRoleEnum;
 import com.lld.im.common.enums.GroupStatusEnum;
@@ -14,6 +18,7 @@ import com.lld.im.common.exception.ApplicationException;
 import com.lld.im.service.group.dao.ImGroupEntity;
 import com.lld.im.service.group.dao.ImGroupMemberEntity;
 import com.lld.im.service.group.dao.mapper.ImGroupMemberMapper;
+import com.lld.im.service.group.model.callback.AddMemberAfterCallback;
 import com.lld.im.service.group.model.req.*;
 import com.lld.im.service.group.model.resp.AddMemberResp;
 import com.lld.im.service.group.model.resp.GetRoleInGroupResp;
@@ -21,6 +26,8 @@ import com.lld.im.service.group.service.ImGroupMemberService;
 import com.lld.im.service.group.service.ImGroupService;
 import com.lld.im.service.user.dao.ImUserDataEntity;
 import com.lld.im.service.user.service.ImUserService;
+import com.lld.im.service.utils.CallbackService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +40,7 @@ import java.util.*;
  * @date 2023/05/28 09:27
  **/
 @Service
+@Slf4j
 public class ImGroupMemberServiceImpl implements ImGroupMemberService {
 
     @Resource
@@ -46,6 +54,12 @@ public class ImGroupMemberServiceImpl implements ImGroupMemberService {
 
     @Resource
     private ImUserService imUserService;
+
+    @Resource
+    private AppConfig appConfig;
+
+    @Resource
+    private CallbackService callbackService;
 
     @Override
     public ResponseVO importGroupMember(ImportGroupMemberReq req) {
@@ -219,6 +233,22 @@ public class ImGroupMemberServiceImpl implements ImGroupMemberService {
         if (!groupResp.isOk()) {
             return groupResp;
         }
+        List<GroupMemberDto> memberDtos = req.getMembers();
+        if (appConfig.isAddGroupMemberBeforeCallback()) {
+            ResponseVO responseVO = callbackService.
+                    beforeCallback(req.getAppId(),
+                            Constants.CallbackCommand.GroupMemberAddBefore
+                            , JSONObject.toJSONString(req));
+            if (!responseVO.isOk()) {
+                return responseVO;
+            }
+            try {
+                memberDtos = JSONArray.parseArray(JSONObject.toJSONString(responseVO.getData()), GroupMemberDto.class);
+            } catch (Exception e) {
+                e.printStackTrace();
+                log.error("GroupMemberAddBefore 回调失败：{}", req.getAppId());
+            }
+        }
         ImGroupEntity group = groupResp.getData();
         /**
          * 私有群（private）	类似普通微信群，创建后仅支持已在群内的好友邀请加群，且无需被邀请方同意或群主审批
@@ -230,7 +260,7 @@ public class ImGroupMemberServiceImpl implements ImGroupMemberService {
             throw new ApplicationException(GroupErrorCode.THIS_OPERATE_NEED_APPMANAGER_ROLE);
         }
         List<String> successId = new ArrayList<>();
-        for (GroupMemberDto memberId : req.getMembers()) {
+        for (GroupMemberDto memberId : memberDtos) {
             ResponseVO responseVO;
             try {
                 responseVO = imGroupMemberService.addGroupMember(req.getGroupId(), req.getAppId(), memberId);
@@ -251,6 +281,16 @@ public class ImGroupMemberServiceImpl implements ImGroupMemberService {
                 addMemberResp.setResultMessage(responseVO.getMsg());
             }
             resp.add(addMemberResp);
+        }
+        if (appConfig.isAddGroupMemberAfterCallback()) {
+            AddMemberAfterCallback dto = new AddMemberAfterCallback();
+            dto.setGroupId(req.getGroupId());
+            dto.setGroupType(group.getGroupType());
+            dto.setMemberId(resp);
+            dto.setOperater(req.getOperater());
+            callbackService.callback(req.getAppId()
+                    , Constants.CallbackCommand.GroupMemberAddAfter,
+                    JSONObject.toJSONString(dto));
         }
         return ResponseVO.successResponse(resp);
     }
@@ -302,6 +342,13 @@ public class ImGroupMemberServiceImpl implements ImGroupMemberService {
             }
         }
         ResponseVO responseVO = imGroupMemberService.removeGroupMember(req.getGroupId(), req.getAppId(), req.getMemberId());
+        if (responseVO.isOk()) {
+            if (appConfig.isDeleteGroupMemberAfterCallback()) {
+                callbackService.callback(req.getAppId(),
+                        Constants.CallbackCommand.GroupMemberDeleteAfter,
+                        JSONObject.toJSONString(req));
+            }
+        }
         return responseVO;
     }
 
@@ -377,15 +424,15 @@ public class ImGroupMemberServiceImpl implements ImGroupMemberService {
                 return ResponseVO.errorResponse(GroupErrorCode.THIS_OPERATE_NEED_MANAGER_ROLE);
             }
             //如果要修改权限相关的则走下面的逻辑
-            if(req.getRole() != null){
+            if (req.getRole() != null) {
                 //获取被操作人的是否在群内
                 ResponseVO<GetRoleInGroupResp> roleInGroupOne = this.getRoleInGroupOne(req.getGroupId(), req.getMemberId(), req.getAppId());
-                if(!roleInGroupOne.isOk()){
+                if (!roleInGroupOne.isOk()) {
                     return roleInGroupOne;
                 }
                 //获取操作人权限
                 ResponseVO<GetRoleInGroupResp> operateRoleInGroupOne = this.getRoleInGroupOne(req.getGroupId(), req.getOperater(), req.getAppId());
-                if(!operateRoleInGroupOne.isOk()){
+                if (!operateRoleInGroupOne.isOk()) {
                     return operateRoleInGroupOne;
                 }
                 GetRoleInGroupResp data = operateRoleInGroupOne.getData();
@@ -393,11 +440,11 @@ public class ImGroupMemberServiceImpl implements ImGroupMemberService {
                 boolean isOwner = roleInfo == GroupMemberRoleEnum.OWNER.getCode();
                 boolean isManager = roleInfo == GroupMemberRoleEnum.MAMAGER.getCode();
                 //不是管理员不能修改权限
-                if(req.getRole() != null && !isOwner && !isManager){
+                if (req.getRole() != null && !isOwner && !isManager) {
                     return ResponseVO.errorResponse(GroupErrorCode.THIS_OPERATE_NEED_MANAGER_ROLE);
                 }
                 //管理员只有群主能够设置
-                if(req.getRole() != null && req.getRole() == GroupMemberRoleEnum.MAMAGER.getCode() && !isOwner){
+                if (req.getRole() != null && req.getRole() == GroupMemberRoleEnum.MAMAGER.getCode() && !isOwner) {
                     return ResponseVO.errorResponse(GroupErrorCode.THIS_OPERATE_NEED_OWNER_ROLE);
                 }
             }
@@ -407,7 +454,7 @@ public class ImGroupMemberServiceImpl implements ImGroupMemberService {
             update.setAlias(req.getAlias());
         }
         //不能直接修改为群主
-        if(req.getRole() != null && req.getRole() != GroupMemberRoleEnum.OWNER.getCode()){
+        if (req.getRole() != null && req.getRole() != GroupMemberRoleEnum.OWNER.getCode()) {
             update.setRole(req.getRole());
         }
         UpdateWrapper<ImGroupMemberEntity> objectUpdateWrapper = new UpdateWrapper<>();
