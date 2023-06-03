@@ -32,4 +32,8 @@ public interface ImGroupMemberService {
     ResponseVO updateGroupMember(UpdateGroupMemberReq req);
 
     ResponseVO speak(SpeaMemberReq req);
+
+    List<String> getGroupMemberId(String groupId, Integer appId);
+
+    List<GroupMemberDto> getGroupManager(String groupId, Integer appId);
 }

@@ -9,7 +9,11 @@ import java.util.List;
 
 public interface ImGroupMemberMapper extends BaseMapper<ImGroupMemberEntity> {
 
-    List<GroupMemberDto> getGroupMember(@Param("appId") Integer appId,@Param("groupId") String groupId);
+    List<GroupMemberDto> getGroupMember(@Param("appId") Integer appId, @Param("groupId") String groupId);
 
     Object getJoinedGroupId(@Param("appId") Integer appId, @Param("memberId") String memberId);
+
+    List<String> getGroupMemberId(@Param("appId") Integer appId, @Param("groupId") String groupId);
+
+    List<GroupMemberDto> getGroupManager(@Param("appId") String groupId, @Param("groupId") Integer appId);
 }

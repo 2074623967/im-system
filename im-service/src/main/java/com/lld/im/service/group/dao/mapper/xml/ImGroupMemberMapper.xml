@@ -19,4 +19,24 @@
         where app_id = #{appId}
           AND member_id = #{memberId}
     </select>
+
+    <select id="getGroupMemberId" resultType="java.lang.String">
+        SELECT member_id
+        FROM im_group_member
+        WHERE app_id = #{appId}
+          AND group_id = #{groupId}
+          AND role != 3
+    </select>
+
+    <select id="getGroupManager" resultType="com.lld.im.service.group.model.req.GroupMemberDto">
+        SELECT member_id,
+               role,
+               alias,
+               join_time,
+               join_type
+        FROM im_group_member
+        WHERE app_id = #{appId}
+          AND group_id = #{appId}
+          AND role IN (1, 2)
+    </select>
 </mapper>
