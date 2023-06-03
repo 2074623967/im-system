@@ -1,0 +1,363 @@
+2023-06-03 11:02:53 -Starting ServiceApplication on LAPTOP-CUHA0UV5 with PID 7376 (D:\ideadaima\mukewang\即时通讯\im-system\im-service\target\classes started by tangcj in D:\ideadaima\mukewang\即时通讯\im-system)
+2023-06-03 11:02:53 -The following profiles are active: dev
+2023-06-03 11:02:54 -Multiple Spring Data modules found, entering strict repository configuration mode!
+2023-06-03 11:02:54 -Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2023-06-03 11:02:54 -Finished Spring Data repository scanning in 21ms. Found 0 Redis repository interfaces.
+2023-06-03 11:02:54 -Tomcat initialized with port(s): 8000 (http)
+2023-06-03 11:02:54 -Initializing ProtocolHandler ["http-nio-8000"]
+2023-06-03 11:02:54 -Starting service [Tomcat]
+2023-06-03 11:02:54 -Starting Servlet engine: [Apache Tomcat/9.0.39]
+2023-06-03 11:02:54 -Initializing Spring embedded WebApplicationContext
+2023-06-03 11:02:54 -Root WebApplicationContext: initialization completed in 982 ms
+2023-06-03 11:02:54 -Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'beanConfig': Injection of resource dependencies failed; nested exception is org.springframework.beans.factory.NoSuchBeanDefinitionException: No qualifying bean of type 'com.lld.im.common.config.AppConfig' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {@javax.annotation.Resource(shareable=true, lookup=, name=, description=, authenticationType=CONTAINER, type=class java.lang.Object, mappedName=)}
+2023-06-03 11:02:54 -Stopping service [Tomcat]
+2023-06-03 11:02:54 -
+
+Error starting ApplicationContext. To display the conditions report re-run your application with 'debug' enabled.
+2023-06-03 11:02:54 -
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+A component required a bean of type 'com.lld.im.common.config.AppConfig' that could not be found.
+
+
+Action:
+
+Consider defining a bean of type 'com.lld.im.common.config.AppConfig' in your configuration.
+
+2023-06-03 11:04:42 -Starting ServiceApplication on LAPTOP-CUHA0UV5 with PID 34364 (D:\ideadaima\mukewang\即时通讯\im-system\im-service\target\classes started by tangcj in D:\ideadaima\mukewang\即时通讯\im-system)
+2023-06-03 11:04:42 -The following profiles are active: dev
+2023-06-03 11:04:42 -Multiple Spring Data modules found, entering strict repository configuration mode!
+2023-06-03 11:04:42 -Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2023-06-03 11:04:43 -Finished Spring Data repository scanning in 19ms. Found 0 Redis repository interfaces.
+2023-06-03 11:04:43 -Tomcat initialized with port(s): 8000 (http)
+2023-06-03 11:04:43 -Initializing ProtocolHandler ["http-nio-8000"]
+2023-06-03 11:04:43 -Starting service [Tomcat]
+2023-06-03 11:04:43 -Starting Servlet engine: [Apache Tomcat/9.0.39]
+2023-06-03 11:04:43 -Initializing Spring embedded WebApplicationContext
+2023-06-03 11:04:43 -Root WebApplicationContext: initialization completed in 998 ms
+2023-06-03 11:05:45 -Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'buildZKClient' defined in class path resource [com/lld/im/service/config/BeanConfig.class]: Bean instantiation via factory method failed; nested exception is org.springframework.beans.BeanInstantiationException: Failed to instantiate [org.I0Itec.zkclient.ZkClient]: Factory method 'buildZKClient' threw exception; nested exception is org.I0Itec.zkclient.exception.ZkTimeoutException: Unable to connect to zookeeper server within timeout: 50000
+2023-06-03 11:13:34 -Starting ServiceApplication on LAPTOP-CUHA0UV5 with PID 15052 (D:\ideadaima\mukewang\即时通讯\im-system\im-service\target\classes started by tangcj in D:\ideadaima\mukewang\即时通讯\im-system)
+2023-06-03 11:13:34 -The following profiles are active: dev
+2023-06-03 11:13:34 -Multiple Spring Data modules found, entering strict repository configuration mode!
+2023-06-03 11:13:34 -Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2023-06-03 11:13:34 -Finished Spring Data repository scanning in 17ms. Found 0 Redis repository interfaces.
+2023-06-03 11:13:35 -Tomcat initialized with port(s): 8000 (http)
+2023-06-03 11:13:35 -Initializing ProtocolHandler ["http-nio-8000"]
+2023-06-03 11:13:35 -Starting service [Tomcat]
+2023-06-03 11:13:35 -Starting Servlet engine: [Apache Tomcat/9.0.39]
+2023-06-03 11:13:35 -Initializing Spring embedded WebApplicationContext
+2023-06-03 11:13:35 -Root WebApplicationContext: initialization completed in 912 ms
+2023-06-03 11:14:38 -Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'imUserController': Injection of resource dependencies failed; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'ZKit': Injection of resource dependencies failed; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'buildZKClient' defined in class path resource [com/lld/im/service/config/BeanConfig.class]: Bean instantiation via factory method failed; nested exception is org.springframework.beans.BeanInstantiationException: Failed to instantiate [org.I0Itec.zkclient.ZkClient]: Factory method 'buildZKClient' threw exception; nested exception is org.I0Itec.zkclient.exception.ZkTimeoutException: Unable to connect to zookeeper server within timeout: 50000
+2023-06-03 11:14:38 -Stopping service [Tomcat]
+2023-06-03 11:14:38 -
+
+Error starting ApplicationContext. To display the conditions report re-run your application with 'debug' enabled.
+2023-06-03 11:14:38 -Application run failed
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'imUserController': Injection of resource dependencies failed; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'ZKit': Injection of resource dependencies failed; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'buildZKClient' defined in class path resource [com/lld/im/service/config/BeanConfig.class]: Bean instantiation via factory method failed; nested exception is org.springframework.beans.BeanInstantiationException: Failed to instantiate [org.I0Itec.zkclient.ZkClient]: Factory method 'buildZKClient' threw exception; nested exception is org.I0Itec.zkclient.exception.ZkTimeoutException: Unable to connect to zookeeper server within timeout: 50000
+	at org.springframework.context.annotation.CommonAnnotationBeanPostProcessor.postProcessProperties(CommonAnnotationBeanPostProcessor.java:321)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1420)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:593)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:516)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:324)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:322)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:897)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:879)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:551)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:143)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:758)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:750)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:405)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:315)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1237)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1226)
+	at com.lld.im.service.ServiceApplication.main(ServiceApplication.java:16)
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'ZKit': Injection of resource dependencies failed; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'buildZKClient' defined in class path resource [com/lld/im/service/config/BeanConfig.class]: Bean instantiation via factory method failed; nested exception is org.springframework.beans.BeanInstantiationException: Failed to instantiate [org.I0Itec.zkclient.ZkClient]: Factory method 'buildZKClient' threw exception; nested exception is org.I0Itec.zkclient.exception.ZkTimeoutException: Unable to connect to zookeeper server within timeout: 50000
+	at org.springframework.context.annotation.CommonAnnotationBeanPostProcessor.postProcessProperties(CommonAnnotationBeanPostProcessor.java:321)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1420)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:593)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:516)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:324)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:322)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:276)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1307)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1227)
+	at org.springframework.context.annotation.CommonAnnotationBeanPostProcessor.autowireResource(CommonAnnotationBeanPostProcessor.java:521)
+	at org.springframework.context.annotation.CommonAnnotationBeanPostProcessor.getResource(CommonAnnotationBeanPostProcessor.java:497)
+	at org.springframework.context.annotation.CommonAnnotationBeanPostProcessor$ResourceElement.getResourceToInject(CommonAnnotationBeanPostProcessor.java:650)
+	at org.springframework.beans.factory.annotation.InjectionMetadata$InjectedElement.inject(InjectionMetadata.java:239)
+	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:130)
+	at org.springframework.context.annotation.CommonAnnotationBeanPostProcessor.postProcessProperties(CommonAnnotationBeanPostProcessor.java:318)
+	... 18 common frames omitted
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'buildZKClient' defined in class path resource [com/lld/im/service/config/BeanConfig.class]: Bean instantiation via factory method failed; nested exception is org.springframework.beans.BeanInstantiationException: Failed to instantiate [org.I0Itec.zkclient.ZkClient]: Factory method 'buildZKClient' threw exception; nested exception is org.I0Itec.zkclient.exception.ZkTimeoutException: Unable to connect to zookeeper server within timeout: 50000
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:655)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:483)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1336)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1176)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:556)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:516)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:324)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:322)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:276)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1307)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1227)
+	at org.springframework.context.annotation.CommonAnnotationBeanPostProcessor.autowireResource(CommonAnnotationBeanPostProcessor.java:521)
+	at org.springframework.context.annotation.CommonAnnotationBeanPostProcessor.getResource(CommonAnnotationBeanPostProcessor.java:497)
+	at org.springframework.context.annotation.CommonAnnotationBeanPostProcessor$ResourceElement.getResourceToInject(CommonAnnotationBeanPostProcessor.java:650)
+	at org.springframework.beans.factory.annotation.InjectionMetadata$InjectedElement.inject(InjectionMetadata.java:239)
+	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:130)
+	at org.springframework.context.annotation.CommonAnnotationBeanPostProcessor.postProcessProperties(CommonAnnotationBeanPostProcessor.java:318)
+	... 34 common frames omitted
+Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [org.I0Itec.zkclient.ZkClient]: Factory method 'buildZKClient' threw exception; nested exception is org.I0Itec.zkclient.exception.ZkTimeoutException: Unable to connect to zookeeper server within timeout: 50000
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:185)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:650)
+	... 52 common frames omitted
+Caused by: org.I0Itec.zkclient.exception.ZkTimeoutException: Unable to connect to zookeeper server within timeout: 50000
+	at org.I0Itec.zkclient.ZkClient.connect(ZkClient.java:876)
+	at org.I0Itec.zkclient.ZkClient.<init>(ZkClient.java:98)
+	at org.I0Itec.zkclient.ZkClient.<init>(ZkClient.java:92)
+	at org.I0Itec.zkclient.ZkClient.<init>(ZkClient.java:76)
+	at com.lld.im.service.config.BeanConfig.buildZKClient(BeanConfig.java:25)
+	at com.lld.im.service.config.BeanConfig$$EnhancerBySpringCGLIB$$9489286c.CGLIB$buildZKClient$1(<generated>)
+	at com.lld.im.service.config.BeanConfig$$EnhancerBySpringCGLIB$$9489286c$$FastClassBySpringCGLIB$$95e5efd6.invoke(<generated>)
+	at org.springframework.cglib.proxy.MethodProxy.invokeSuper(MethodProxy.java:244)
+	at org.springframework.context.annotation.ConfigurationClassEnhancer$BeanMethodInterceptor.intercept(ConfigurationClassEnhancer.java:331)
+	at com.lld.im.service.config.BeanConfig$$EnhancerBySpringCGLIB$$9489286c.buildZKClient(<generated>)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:154)
+	... 53 common frames omitted
+2023-06-03 11:26:29 -Starting ServiceApplication on LAPTOP-CUHA0UV5 with PID 34096 (D:\ideadaima\mukewang\即时通讯\im-system\im-service\target\classes started by tangcj in D:\ideadaima\mukewang\即时通讯\im-system)
+2023-06-03 11:26:29 -The following profiles are active: dev
+2023-06-03 11:26:29 -Multiple Spring Data modules found, entering strict repository configuration mode!
+2023-06-03 11:26:29 -Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2023-06-03 11:26:29 -Finished Spring Data repository scanning in 18ms. Found 0 Redis repository interfaces.
+2023-06-03 11:26:30 -Tomcat initialized with port(s): 8000 (http)
+2023-06-03 11:26:30 -Initializing ProtocolHandler ["http-nio-8000"]
+2023-06-03 11:26:30 -Starting service [Tomcat]
+2023-06-03 11:26:30 -Starting Servlet engine: [Apache Tomcat/9.0.39]
+2023-06-03 11:26:30 -Initializing Spring embedded WebApplicationContext
+2023-06-03 11:26:30 -Root WebApplicationContext: initialization completed in 939 ms
+2023-06-03 11:27:31 -Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'imUserController': Injection of resource dependencies failed; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'ZKit': Injection of resource dependencies failed; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'buildZKClient' defined in class path resource [com/lld/im/service/config/BeanConfig.class]: Bean instantiation via factory method failed; nested exception is org.springframework.beans.BeanInstantiationException: Failed to instantiate [org.I0Itec.zkclient.ZkClient]: Factory method 'buildZKClient' threw exception; nested exception is org.I0Itec.zkclient.exception.ZkTimeoutException: Unable to connect to zookeeper server within timeout: 50000
+2023-06-03 11:27:31 -Stopping service [Tomcat]
+2023-06-03 11:27:31 -
+
+Error starting ApplicationContext. To display the conditions report re-run your application with 'debug' enabled.
+2023-06-03 11:27:31 -Application run failed
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'imUserController': Injection of resource dependencies failed; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'ZKit': Injection of resource dependencies failed; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'buildZKClient' defined in class path resource [com/lld/im/service/config/BeanConfig.class]: Bean instantiation via factory method failed; nested exception is org.springframework.beans.BeanInstantiationException: Failed to instantiate [org.I0Itec.zkclient.ZkClient]: Factory method 'buildZKClient' threw exception; nested exception is org.I0Itec.zkclient.exception.ZkTimeoutException: Unable to connect to zookeeper server within timeout: 50000
+	at org.springframework.context.annotation.CommonAnnotationBeanPostProcessor.postProcessProperties(CommonAnnotationBeanPostProcessor.java:321)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1420)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:593)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:516)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:324)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:322)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:897)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:879)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:551)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:143)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:758)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:750)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:405)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:315)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1237)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1226)
+	at com.lld.im.service.ServiceApplication.main(ServiceApplication.java:16)
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'ZKit': Injection of resource dependencies failed; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'buildZKClient' defined in class path resource [com/lld/im/service/config/BeanConfig.class]: Bean instantiation via factory method failed; nested exception is org.springframework.beans.BeanInstantiationException: Failed to instantiate [org.I0Itec.zkclient.ZkClient]: Factory method 'buildZKClient' threw exception; nested exception is org.I0Itec.zkclient.exception.ZkTimeoutException: Unable to connect to zookeeper server within timeout: 50000
+	at org.springframework.context.annotation.CommonAnnotationBeanPostProcessor.postProcessProperties(CommonAnnotationBeanPostProcessor.java:321)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1420)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:593)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:516)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:324)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:322)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:276)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1307)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1227)
+	at org.springframework.context.annotation.CommonAnnotationBeanPostProcessor.autowireResource(CommonAnnotationBeanPostProcessor.java:521)
+	at org.springframework.context.annotation.CommonAnnotationBeanPostProcessor.getResource(CommonAnnotationBeanPostProcessor.java:497)
+	at org.springframework.context.annotation.CommonAnnotationBeanPostProcessor$ResourceElement.getResourceToInject(CommonAnnotationBeanPostProcessor.java:650)
+	at org.springframework.beans.factory.annotation.InjectionMetadata$InjectedElement.inject(InjectionMetadata.java:239)
+	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:130)
+	at org.springframework.context.annotation.CommonAnnotationBeanPostProcessor.postProcessProperties(CommonAnnotationBeanPostProcessor.java:318)
+	... 18 common frames omitted
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'buildZKClient' defined in class path resource [com/lld/im/service/config/BeanConfig.class]: Bean instantiation via factory method failed; nested exception is org.springframework.beans.BeanInstantiationException: Failed to instantiate [org.I0Itec.zkclient.ZkClient]: Factory method 'buildZKClient' threw exception; nested exception is org.I0Itec.zkclient.exception.ZkTimeoutException: Unable to connect to zookeeper server within timeout: 50000
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:655)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:483)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1336)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1176)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:556)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:516)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:324)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:322)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:276)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1307)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1227)
+	at org.springframework.context.annotation.CommonAnnotationBeanPostProcessor.autowireResource(CommonAnnotationBeanPostProcessor.java:521)
+	at org.springframework.context.annotation.CommonAnnotationBeanPostProcessor.getResource(CommonAnnotationBeanPostProcessor.java:497)
+	at org.springframework.context.annotation.CommonAnnotationBeanPostProcessor$ResourceElement.getResourceToInject(CommonAnnotationBeanPostProcessor.java:650)
+	at org.springframework.beans.factory.annotation.InjectionMetadata$InjectedElement.inject(InjectionMetadata.java:239)
+	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:130)
+	at org.springframework.context.annotation.CommonAnnotationBeanPostProcessor.postProcessProperties(CommonAnnotationBeanPostProcessor.java:318)
+	... 34 common frames omitted
+Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [org.I0Itec.zkclient.ZkClient]: Factory method 'buildZKClient' threw exception; nested exception is org.I0Itec.zkclient.exception.ZkTimeoutException: Unable to connect to zookeeper server within timeout: 50000
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:185)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:650)
+	... 52 common frames omitted
+Caused by: org.I0Itec.zkclient.exception.ZkTimeoutException: Unable to connect to zookeeper server within timeout: 50000
+	at org.I0Itec.zkclient.ZkClient.connect(ZkClient.java:876)
+	at org.I0Itec.zkclient.ZkClient.<init>(ZkClient.java:98)
+	at org.I0Itec.zkclient.ZkClient.<init>(ZkClient.java:92)
+	at org.I0Itec.zkclient.ZkClient.<init>(ZkClient.java:76)
+	at com.lld.im.service.config.BeanConfig.buildZKClient(BeanConfig.java:25)
+	at com.lld.im.service.config.BeanConfig$$EnhancerBySpringCGLIB$$bd58e27f.CGLIB$buildZKClient$1(<generated>)
+	at com.lld.im.service.config.BeanConfig$$EnhancerBySpringCGLIB$$bd58e27f$$FastClassBySpringCGLIB$$1f0bb2e8.invoke(<generated>)
+	at org.springframework.cglib.proxy.MethodProxy.invokeSuper(MethodProxy.java:244)
+	at org.springframework.context.annotation.ConfigurationClassEnhancer$BeanMethodInterceptor.intercept(ConfigurationClassEnhancer.java:331)
+	at com.lld.im.service.config.BeanConfig$$EnhancerBySpringCGLIB$$bd58e27f.buildZKClient(<generated>)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:154)
+	... 53 common frames omitted
+2023-06-03 11:53:53 -Starting ServiceApplication on LAPTOP-CUHA0UV5 with PID 17468 (D:\ideadaima\mukewang\即时通讯\im-system\im-service\target\classes started by tangcj in D:\ideadaima\mukewang\即时通讯\im-system)
+2023-06-03 11:53:53 -The following profiles are active: dev
+2023-06-03 11:53:54 -Multiple Spring Data modules found, entering strict repository configuration mode!
+2023-06-03 11:53:54 -Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2023-06-03 11:53:54 -Finished Spring Data repository scanning in 17ms. Found 0 Redis repository interfaces.
+2023-06-03 11:53:54 -Tomcat initialized with port(s): 8000 (http)
+2023-06-03 11:53:54 -Initializing ProtocolHandler ["http-nio-8000"]
+2023-06-03 11:53:54 -Starting service [Tomcat]
+2023-06-03 11:53:54 -Starting Servlet engine: [Apache Tomcat/9.0.39]
+2023-06-03 11:53:54 -Initializing Spring embedded WebApplicationContext
+2023-06-03 11:53:54 -Root WebApplicationContext: initialization completed in 779 ms
+2023-06-03 11:54:56 -Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'imUserController': Injection of resource dependencies failed; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'ZKit': Injection of resource dependencies failed; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'buildZKClient' defined in class path resource [com/lld/im/service/config/BeanConfig.class]: Bean instantiation via factory method failed; nested exception is org.springframework.beans.BeanInstantiationException: Failed to instantiate [org.I0Itec.zkclient.ZkClient]: Factory method 'buildZKClient' threw exception; nested exception is org.I0Itec.zkclient.exception.ZkTimeoutException: Unable to connect to zookeeper server within timeout: 50000
+2023-06-03 11:54:56 -Stopping service [Tomcat]
+2023-06-03 11:54:56 -
+
+Error starting ApplicationContext. To display the conditions report re-run your application with 'debug' enabled.
+2023-06-03 11:54:56 -Application run failed
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'imUserController': Injection of resource dependencies failed; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'ZKit': Injection of resource dependencies failed; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'buildZKClient' defined in class path resource [com/lld/im/service/config/BeanConfig.class]: Bean instantiation via factory method failed; nested exception is org.springframework.beans.BeanInstantiationException: Failed to instantiate [org.I0Itec.zkclient.ZkClient]: Factory method 'buildZKClient' threw exception; nested exception is org.I0Itec.zkclient.exception.ZkTimeoutException: Unable to connect to zookeeper server within timeout: 50000
+	at org.springframework.context.annotation.CommonAnnotationBeanPostProcessor.postProcessProperties(CommonAnnotationBeanPostProcessor.java:321)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1420)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:593)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:516)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:324)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:322)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:897)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:879)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:551)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:143)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:758)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:750)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:405)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:315)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1237)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1226)
+	at com.lld.im.service.ServiceApplication.main(ServiceApplication.java:16)
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'ZKit': Injection of resource dependencies failed; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'buildZKClient' defined in class path resource [com/lld/im/service/config/BeanConfig.class]: Bean instantiation via factory method failed; nested exception is org.springframework.beans.BeanInstantiationException: Failed to instantiate [org.I0Itec.zkclient.ZkClient]: Factory method 'buildZKClient' threw exception; nested exception is org.I0Itec.zkclient.exception.ZkTimeoutException: Unable to connect to zookeeper server within timeout: 50000
+	at org.springframework.context.annotation.CommonAnnotationBeanPostProcessor.postProcessProperties(CommonAnnotationBeanPostProcessor.java:321)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1420)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:593)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:516)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:324)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:322)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:276)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1307)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1227)
+	at org.springframework.context.annotation.CommonAnnotationBeanPostProcessor.autowireResource(CommonAnnotationBeanPostProcessor.java:521)
+	at org.springframework.context.annotation.CommonAnnotationBeanPostProcessor.getResource(CommonAnnotationBeanPostProcessor.java:497)
+	at org.springframework.context.annotation.CommonAnnotationBeanPostProcessor$ResourceElement.getResourceToInject(CommonAnnotationBeanPostProcessor.java:650)
+	at org.springframework.beans.factory.annotation.InjectionMetadata$InjectedElement.inject(InjectionMetadata.java:239)
+	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:130)
+	at org.springframework.context.annotation.CommonAnnotationBeanPostProcessor.postProcessProperties(CommonAnnotationBeanPostProcessor.java:318)
+	... 18 common frames omitted
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'buildZKClient' defined in class path resource [com/lld/im/service/config/BeanConfig.class]: Bean instantiation via factory method failed; nested exception is org.springframework.beans.BeanInstantiationException: Failed to instantiate [org.I0Itec.zkclient.ZkClient]: Factory method 'buildZKClient' threw exception; nested exception is org.I0Itec.zkclient.exception.ZkTimeoutException: Unable to connect to zookeeper server within timeout: 50000
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:655)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:483)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1336)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1176)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:556)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:516)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:324)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:322)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:276)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1307)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1227)
+	at org.springframework.context.annotation.CommonAnnotationBeanPostProcessor.autowireResource(CommonAnnotationBeanPostProcessor.java:521)
+	at org.springframework.context.annotation.CommonAnnotationBeanPostProcessor.getResource(CommonAnnotationBeanPostProcessor.java:497)
+	at org.springframework.context.annotation.CommonAnnotationBeanPostProcessor$ResourceElement.getResourceToInject(CommonAnnotationBeanPostProcessor.java:650)
+	at org.springframework.beans.factory.annotation.InjectionMetadata$InjectedElement.inject(InjectionMetadata.java:239)
+	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:130)
+	at org.springframework.context.annotation.CommonAnnotationBeanPostProcessor.postProcessProperties(CommonAnnotationBeanPostProcessor.java:318)
+	... 34 common frames omitted
+Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [org.I0Itec.zkclient.ZkClient]: Factory method 'buildZKClient' threw exception; nested exception is org.I0Itec.zkclient.exception.ZkTimeoutException: Unable to connect to zookeeper server within timeout: 50000
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:185)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:650)
+	... 52 common frames omitted
+Caused by: org.I0Itec.zkclient.exception.ZkTimeoutException: Unable to connect to zookeeper server within timeout: 50000
+	at org.I0Itec.zkclient.ZkClient.connect(ZkClient.java:876)
+	at org.I0Itec.zkclient.ZkClient.<init>(ZkClient.java:98)
+	at org.I0Itec.zkclient.ZkClient.<init>(ZkClient.java:92)
+	at org.I0Itec.zkclient.ZkClient.<init>(ZkClient.java:76)
+	at com.lld.im.service.config.BeanConfig.buildZKClient(BeanConfig.java:25)
+	at com.lld.im.service.config.BeanConfig$$EnhancerBySpringCGLIB$$6121e10b.CGLIB$buildZKClient$0(<generated>)
+	at com.lld.im.service.config.BeanConfig$$EnhancerBySpringCGLIB$$6121e10b$$FastClassBySpringCGLIB$$b4f8fb9f.invoke(<generated>)
+	at org.springframework.cglib.proxy.MethodProxy.invokeSuper(MethodProxy.java:244)
+	at org.springframework.context.annotation.ConfigurationClassEnhancer$BeanMethodInterceptor.intercept(ConfigurationClassEnhancer.java:331)
+	at com.lld.im.service.config.BeanConfig$$EnhancerBySpringCGLIB$$6121e10b.buildZKClient(<generated>)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:154)
+	... 53 common frames omitted
+2023-06-03 11:56:01 -Starting ServiceApplication on LAPTOP-CUHA0UV5 with PID 25016 (D:\ideadaima\mukewang\即时通讯\im-system\im-service\target\classes started by tangcj in D:\ideadaima\mukewang\即时通讯\im-system)
+2023-06-03 11:56:01 -The following profiles are active: dev
+2023-06-03 11:56:01 -Multiple Spring Data modules found, entering strict repository configuration mode!
+2023-06-03 11:56:01 -Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2023-06-03 11:56:01 -Finished Spring Data repository scanning in 17ms. Found 0 Redis repository interfaces.
+2023-06-03 11:56:01 -Tomcat initialized with port(s): 8000 (http)
+2023-06-03 11:56:01 -Initializing ProtocolHandler ["http-nio-8000"]
+2023-06-03 11:56:01 -Starting service [Tomcat]
+2023-06-03 11:56:01 -Starting Servlet engine: [Apache Tomcat/9.0.39]
+2023-06-03 11:56:02 -Initializing Spring embedded WebApplicationContext
+2023-06-03 11:56:02 -Root WebApplicationContext: initialization completed in 938 ms
+2023-06-03 11:56:07 -Starting ServiceApplication on LAPTOP-CUHA0UV5 with PID 13192 (D:\ideadaima\mukewang\即时通讯\im-system\im-service\target\classes started by tangcj in D:\ideadaima\mukewang\即时通讯\im-system)
+2023-06-03 11:56:07 -The following profiles are active: dev
+2023-06-03 11:56:08 -Multiple Spring Data modules found, entering strict repository configuration mode!
+2023-06-03 11:56:08 -Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2023-06-03 11:56:08 -Finished Spring Data repository scanning in 21ms. Found 0 Redis repository interfaces.
+2023-06-03 11:56:08 -Tomcat initialized with port(s): 8000 (http)
+2023-06-03 11:56:08 -Initializing ProtocolHandler ["http-nio-8000"]
+2023-06-03 11:56:08 -Starting service [Tomcat]
+2023-06-03 11:56:08 -Starting Servlet engine: [Apache Tomcat/9.0.39]
+2023-06-03 11:56:08 -Initializing Spring embedded WebApplicationContext
+2023-06-03 11:56:08 -Root WebApplicationContext: initialization completed in 799 ms
+2023-06-03 11:56:27 -Initializing ExecutorService 'applicationTaskExecutor'
+2023-06-03 11:56:27 -Starting ProtocolHandler ["http-nio-8000"]
+2023-06-03 11:56:28 -Tomcat started on port(s): 8000 (http) with context path ''
+2023-06-03 11:56:28 -Started ServiceApplication in 20.648 seconds (JVM running for 21.346)

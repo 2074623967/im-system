@@ -8,10 +8,7 @@ import com.lld.im.common.enums.UserErrorCode;
 import com.lld.im.common.exception.ApplicationException;
 import com.lld.im.service.user.dao.ImUserDataEntity;
 import com.lld.im.service.user.dao.mapper.ImUserDataMapper;
-import com.lld.im.service.user.model.req.DeleteUserReq;
-import com.lld.im.service.user.model.req.GetUserInfoReq;
-import com.lld.im.service.user.model.req.ImportUserReq;
-import com.lld.im.service.user.model.req.ModifyUserInfoReq;
+import com.lld.im.service.user.model.req.*;
 import com.lld.im.service.user.model.resp.GetUserInfoResp;
 import com.lld.im.service.user.model.resp.ImportUserResp;
 import com.lld.im.service.user.service.ImUserService;
@@ -21,6 +18,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,11 +30,11 @@ import java.util.List;
 @Service
 public class ImUserviceImpl implements ImUserService {
 
-    @Autowired
+    @Resource
     private ImUserDataMapper imUserDataMapper;
 
-    @Autowired
-    StringRedisTemplate stringRedisTemplate;
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
 
     @Override
     public ResponseVO importUser(ImportUserReq req) {
@@ -163,5 +161,10 @@ public class ImUserviceImpl implements ImUserService {
             return ResponseVO.successResponse();
         }
         throw new ApplicationException(UserErrorCode.MODIFY_USER_ERROR);
+    }
+
+    @Override
+    public ResponseVO login(LoginReq req) {
+        return ResponseVO.successResponse();
     }
 }

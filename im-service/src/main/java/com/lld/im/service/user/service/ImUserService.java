@@ -17,4 +17,6 @@ public interface ImUserService {
     public ResponseVO deleteUser(DeleteUserReq req);
 
     public ResponseVO modifyUserInfo(ModifyUserInfoReq req);
+
+    ResponseVO login(LoginReq req);
 }

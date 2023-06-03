@@ -33,8 +33,9 @@ public class Starter {
     //len+body
 
     public static void main(String[] args) {
-        String path = "D:\\ideadaima\\mukewang\\即时通讯\\im-system\\im-tcp\\src\\main\\resources\\config.yml";
-        start(path);
+        if(args.length > 0){
+            start(args[0]);
+        }
     }
 
     private static void start(String path) {
