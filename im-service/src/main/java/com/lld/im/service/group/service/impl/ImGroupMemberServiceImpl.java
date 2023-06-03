@@ -50,7 +50,6 @@ public class ImGroupMemberServiceImpl implements ImGroupMemberService {
     @Override
     public ResponseVO importGroupMember(ImportGroupMemberReq req) {
         List<AddMemberResp> resp = new ArrayList<>();
-
         ResponseVO<ImGroupEntity> groupResp = imGroupService.getGroup(req.getGroupId(), req.getAppId());
         if (!groupResp.isOk()) {
             return groupResp;
