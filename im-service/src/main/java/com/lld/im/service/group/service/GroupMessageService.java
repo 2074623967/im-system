@@ -6,6 +6,7 @@ import com.lld.im.common.enums.command.GroupEventCommand;
 import com.lld.im.common.model.ClientInfo;
 import com.lld.im.common.model.message.GroupChatMessageContent;
 import com.lld.im.service.message.service.CheckSendMessageService;
+import com.lld.im.service.message.service.MessageStoreService;
 import com.lld.im.service.message.service.P2PMessageService;
 import com.lld.im.service.utils.MessageProducer;
 import org.slf4j.Logger;
@@ -33,6 +34,9 @@ public class GroupMessageService {
     @Resource
     private ImGroupMemberService imGroupMemberService;
 
+    @Resource
+    private MessageStoreService messageStoreService;
+
     public void process(GroupChatMessageContent messageContent) {
         logger.info("消息开始处理：{}", messageContent.getMessageId());
         String fromId = messageContent.getFromId();
@@ -43,6 +47,8 @@ public class GroupMessageService {
         //发送方和接收方是否是好友
         ResponseVO responseVO = imServerPermissionCheck(fromId, toId, appId);
         if (responseVO.isOk()) {
+            //插入数据
+            messageStoreService.storeGroupMessage(messageContent);
             //1.回ack成功给自己
             ack(messageContent, responseVO);
             //2.发消息给同步在线端
