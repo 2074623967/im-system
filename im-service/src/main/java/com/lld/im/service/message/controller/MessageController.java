@@ -1,7 +1,7 @@
 package com.lld.im.service.message.controller;
 
 import com.lld.im.common.ResponseVO;
-import com.lld.im.service.group.service.GroupMessageService;
+import com.lld.im.common.model.message.CheckSendMessageReq;
 import com.lld.im.service.message.model.req.SendMessageReq;
 import com.lld.im.service.message.service.P2PMessageService;
 import org.springframework.validation.annotation.Validated;
@@ -26,5 +26,10 @@ public class MessageController {
     public ResponseVO send(@RequestBody @Validated SendMessageReq req, Integer appId)  {
         req.setAppId(appId);
         return ResponseVO.successResponse(p2PMessageService.send(req));
+    }
+
+    @RequestMapping("/checkSend")
+    public ResponseVO checkSend(@RequestBody @Validated CheckSendMessageReq req)  {
+        return p2PMessageService.imServerPermissionCheck(req.getFromId(),req.getToId(),req.getAppId());
     }
 }
