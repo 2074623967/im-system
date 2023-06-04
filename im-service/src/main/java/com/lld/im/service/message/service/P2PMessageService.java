@@ -3,11 +3,14 @@ package com.lld.im.service.message.service;
 import com.lld.im.codec.pack.message.ChatMessageAck;
 import com.lld.im.codec.pack.message.MessageReciveServerAckPack;
 import com.lld.im.common.ResponseVO;
+import com.lld.im.common.constant.Constants;
 import com.lld.im.common.enums.command.MessageCommand;
 import com.lld.im.common.model.ClientInfo;
 import com.lld.im.common.model.message.MessageContent;
 import com.lld.im.service.message.model.req.SendMessageReq;
 import com.lld.im.service.message.model.resp.SendMessageResp;
+import com.lld.im.service.seq.RedisSeq;
+import com.lld.im.service.utils.ConversationIdGenerate;
 import com.lld.im.service.utils.MessageProducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +43,9 @@ public class P2PMessageService {
     @Resource
     private MessageStoreService messageStoreService;
 
+    @Resource
+    private RedisSeq redisSeq;
+
     private final ThreadPoolExecutor threadPoolExecutor;
 
     {
@@ -56,17 +62,23 @@ public class P2PMessageService {
         });
     }
 
+    //发送方客户端时间
+    //messageKey
+    //redis 1 2 3
     public void process(MessageContent messageContent) {
         logger.info("消息开始处理：{}", messageContent.getMessageId());
-//        String fromId = messageContent.getFromId();
-//        String toId = messageContent.getToId();
-//        Integer appId = messageContent.getAppId();
+        String fromId = messageContent.getFromId();
+        String toId = messageContent.getToId();
+        Integer appId = messageContent.getAppId();
         //前置校验
         //这个用户是否被禁言 是否被禁用
         //发送方和接收方是否是好友
 //        ResponseVO responseVO = imServerPermissionCheck(fromId, toId, appId);
 //        if (responseVO.isOk()) {
         threadPoolExecutor.execute(() -> {
+            long seq = redisSeq.doGetSeq(appId + ":" + Constants.SeqConstants.Message +
+                    ":" + ConversationIdGenerate.generateP2PId(fromId, toId));
+            messageContent.setMessageSequence(seq);
             //插入数据
             messageStoreService.storeP2PMessage(messageContent);
             //1.回ack成功给自己
@@ -101,7 +113,7 @@ public class P2PMessageService {
 
     private void ack(MessageContent messageContent, ResponseVO responseVO) {
         logger.info("msg ack,msgId={},checkResut{}", messageContent.getMessageId(), responseVO.getCode());
-        ChatMessageAck chatMessageAck = new ChatMessageAck(messageContent.getMessageId());
+        ChatMessageAck chatMessageAck = new ChatMessageAck(messageContent.getMessageId(), messageContent.getMessageSequence());
         responseVO.setData(chatMessageAck);
         //发消息
         messageProducer.sendToUser(messageContent.getFromId(), MessageCommand.MSG_ACK, responseVO, messageContent);

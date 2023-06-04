@@ -6,17 +6,23 @@ package com.lld.im.common.constant;
  **/
 public class Constants {
 
-    /** channel绑定的userId Key*/
+    /**
+     * channel绑定的userId Key
+     */
     public static final String UserId = "userId";
 
-    /** channel绑定的appId */
+    /**
+     * channel绑定的appId
+     */
     public static final String AppId = "appId";
 
     public static final String ClientType = "clientType";
 
     public static final String Imei = "imei";
 
-    /** channel绑定的clientType 和 imel Key*/
+    /**
+     * channel绑定的clientType 和 imel Key
+     */
     public static final String ClientImei = "clientImei";
 
     public static final String ReadTime = "readTime";
@@ -67,7 +73,7 @@ public class Constants {
         public static final String userCustomerStatus = "userCustomerStatus";
     }
 
-    public static class RabbitConstants{
+    public static class RabbitConstants {
 
         public static final String Im2UserService = "pipeline2UserService";
 
@@ -88,7 +94,7 @@ public class Constants {
         public static final String StoreGroupMessage = "storeGroupMessage";
     }
 
-    public static class CallbackCommand{
+    public static class CallbackCommand {
 
         public static final String ModifyUserAfter = "user.modify.after";
 
@@ -125,4 +131,23 @@ public class Constants {
         public static final String SendMessageBefore = "message.send.before";
     }
 
+    public static class SeqConstants {
+
+        public static final String Message = "messageSeq";
+
+        public static final String GroupMessage = "groupMessageSeq";
+
+        public static final String Friendship = "friendshipSeq";
+
+//        public static final String FriendshipBlack = "friendshipBlackSeq";
+
+        public static final String FriendshipRequest = "friendshipRequestSeq";
+
+        public static final String FriendshipGroup = "friendshipGrouptSeq";
+
+        public static final String Group = "groupSeq";
+
+        public static final String Conversation = "conversationSeq";
+
+    }
 }
