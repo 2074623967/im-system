@@ -1,6 +1,7 @@
 package com.lld.im.service.message.service;
 
 import com.lld.im.codec.pack.message.ChatMessageAck;
+import com.lld.im.codec.pack.message.MessageReciveServerAckPack;
 import com.lld.im.common.ResponseVO;
 import com.lld.im.common.enums.command.MessageCommand;
 import com.lld.im.common.model.ClientInfo;
@@ -57,9 +58,9 @@ public class P2PMessageService {
 
     public void process(MessageContent messageContent) {
         logger.info("消息开始处理：{}", messageContent.getMessageId());
-        String fromId = messageContent.getFromId();
-        String toId = messageContent.getToId();
-        Integer appId = messageContent.getAppId();
+//        String fromId = messageContent.getFromId();
+//        String toId = messageContent.getToId();
+//        Integer appId = messageContent.getAppId();
         //前置校验
         //这个用户是否被禁言 是否被禁用
         //发送方和接收方是否是好友
@@ -73,7 +74,11 @@ public class P2PMessageService {
             //2.发消息给同步在线端
             syncToSender(messageContent, messageContent);
             //3.发消息给对方在线端
-            dispatchMessage(messageContent);
+            List<ClientInfo> clientInfos = dispatchMessage(messageContent);
+            if (clientInfos.isEmpty()) {
+                //发送接收确认给发送方,要带上是服务端发送的标识
+                reciverAck(messageContent);
+            }
             logger.info("消息处理完成：{}", messageContent.getMessageId());
         });
 //        } else {
@@ -100,6 +105,17 @@ public class P2PMessageService {
         responseVO.setData(chatMessageAck);
         //发消息
         messageProducer.sendToUser(messageContent.getFromId(), MessageCommand.MSG_ACK, responseVO, messageContent);
+    }
+
+    public void reciverAck(MessageContent messageContent) {
+        MessageReciveServerAckPack pack = new MessageReciveServerAckPack();
+        pack.setFromId(messageContent.getToId());
+        pack.setToId(messageContent.getFromId());
+        pack.setMessageKey(messageContent.getMessageKey());
+        pack.setServerSend(true);
+        messageProducer.sendToUser(messageContent.getFromId(), MessageCommand.MSG_RECIVE_ACK,
+                pack, new ClientInfo(messageContent.getAppId(), messageContent.getClientType(),
+                        messageContent.getImei()));
     }
 
     public ResponseVO imServerPermissionCheck(String fromId, String toId, Integer appId) {
