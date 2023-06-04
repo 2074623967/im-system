@@ -2,7 +2,10 @@ package com.lld.im.tcp.server;
 
 import com.lld.im.codec.MessageDecoder;
 import com.lld.im.codec.MessageEecoder;
+import com.lld.im.codec.WebSocketMessageDecoder;
+import com.lld.im.codec.WebSocketMessageEncoder;
 import com.lld.im.codec.config.BootstrapConfig;
+import com.lld.im.tcp.handler.NettyServerHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -64,6 +67,9 @@ public class LimWebSocketServer {
                          * 对于websocket来讲，都是以frames进行传输的，不同的数据类型对应的frames也不同
                          */
                         pipeline.addLast(new WebSocketServerProtocolHandler("/ws"));
+                        pipeline.addLast(new WebSocketMessageDecoder());
+                        pipeline.addLast(new WebSocketMessageEncoder());
+                        pipeline.addLast(new NettyServerHandler(config.getBrokerId(), config.getLogicUrl()));
                     }
                 });
     }

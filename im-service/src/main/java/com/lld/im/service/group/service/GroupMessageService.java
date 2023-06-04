@@ -1,10 +1,12 @@
-package com.lld.im.service.message.service;
+package com.lld.im.service.group.service;
 
 import com.lld.im.codec.pack.message.ChatMessageAck;
 import com.lld.im.common.ResponseVO;
-import com.lld.im.common.enums.command.MessageCommand;
+import com.lld.im.common.enums.command.GroupEventCommand;
 import com.lld.im.common.model.ClientInfo;
-import com.lld.im.common.model.message.MessageContent;
+import com.lld.im.common.model.message.GroupChatMessageContent;
+import com.lld.im.service.message.service.CheckSendMessageService;
+import com.lld.im.service.message.service.P2PMessageService;
 import com.lld.im.service.utils.MessageProducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,10 +17,10 @@ import java.util.List;
 
 /**
  * @author tangcj
- * @date 2023/06/04 10:19
+ * @date 2023/06/04 11:34
  **/
 @Service
-public class P2PMessageService {
+public class GroupMessageService {
 
     private static Logger logger = LoggerFactory.getLogger(P2PMessageService.class);
 
@@ -28,7 +30,10 @@ public class P2PMessageService {
     @Resource
     private MessageProducer messageProducer;
 
-    public void process(MessageContent messageContent) {
+    @Resource
+    private ImGroupMemberService imGroupMemberService;
+
+    public void process(GroupChatMessageContent messageContent) {
         logger.info("消息开始处理：{}", messageContent.getMessageId());
         String fromId = messageContent.getFromId();
         String toId = messageContent.getToId();
@@ -52,31 +57,33 @@ public class P2PMessageService {
         }
     }
 
-    private List<ClientInfo> dispatchMessage(MessageContent messageContent) {
-        List<ClientInfo> clientInfos = messageProducer.sendToUser(messageContent.getToId(), MessageCommand.MSG_P2P,
-                messageContent, messageContent.getAppId());
-        return clientInfos;
+    private void dispatchMessage(GroupChatMessageContent messageContent) {
+        List<String> groupMemberId = imGroupMemberService.getGroupMemberId(messageContent.getGroupId(),
+                messageContent.getAppId());
+        for (String memberId : groupMemberId) {
+            if (!memberId.equals(messageContent.getFromId())) {
+                messageProducer.sendToUser(memberId,
+                        GroupEventCommand.MSG_GROUP,
+                        messageContent, messageContent.getAppId());
+            }
+        }
     }
 
-    private void syncToSender(MessageContent messageContent, ClientInfo clientInfo) {
-        messageProducer.sendToUserExceptClient(messageContent.getFromId(), MessageCommand.MSG_P2P, messageContent,
+    private void syncToSender(GroupChatMessageContent messageContent, ClientInfo clientInfo) {
+        messageProducer.sendToUserExceptClient(messageContent.getFromId(), GroupEventCommand.MSG_GROUP, messageContent,
                 messageContent);
     }
 
-    private void ack(MessageContent messageContent, ResponseVO responseVO) {
+    private void ack(GroupChatMessageContent messageContent, ResponseVO responseVO) {
         logger.info("msg ack,msgId={},checkResut{}", messageContent.getMessageId(), responseVO.getCode());
         ChatMessageAck chatMessageAck = new ChatMessageAck(messageContent.getMessageId());
         responseVO.setData(chatMessageAck);
         //发消息
-        messageProducer.sendToUser(messageContent.getFromId(), MessageCommand.MSG_ACK, responseVO, messageContent);
+        messageProducer.sendToUser(messageContent.getFromId(), GroupEventCommand.GROUP_MSG_ACK, responseVO, messageContent);
     }
 
     private ResponseVO imServerPermissionCheck(String fromId, String toId, Integer appId) {
-        ResponseVO responseVO = checkSendMessageService.checkSenderForvidAndMute(fromId, appId);
-        if (!responseVO.isOk()) {
-            return responseVO;
-        }
-        responseVO = checkSendMessageService.checkFriendShip(fromId, toId, appId);
+        ResponseVO responseVO = checkSendMessageService.checkGroupMessage(fromId, toId, appId);
         return responseVO;
     }
 }

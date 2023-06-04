@@ -37,8 +37,11 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Message> {
 
     private Integer brokerId;
 
-    public NettyServerHandler(Integer brokerId) {
+    private String logicUrl;
+
+    public NettyServerHandler(Integer brokerId, String logicUrl) {
         this.brokerId = brokerId;
+        this.logicUrl = logicUrl;
     }
 
     @Override
