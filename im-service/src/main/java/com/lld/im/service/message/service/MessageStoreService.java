@@ -11,14 +11,17 @@ import com.lld.im.service.message.dao.ImMessageHistoryEntity;
 import com.lld.im.service.message.dao.mapper.ImMessageBodyMapper;
 import com.lld.im.service.message.dao.mapper.ImMessageHistoryMapper;
 import com.lld.im.service.utils.SnowflakeIdWorker;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author tangcj
@@ -41,6 +44,9 @@ public class MessageStoreService {
 
     @Resource
     private RabbitTemplate rabbitTemplate;
+
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
 
     @Transactional
     public void storeP2PMessage(MessageContent messageContent) {
@@ -118,5 +124,21 @@ public class MessageStoreService {
         messageBody.setMessageTime(messageContent.getMessageTime());
         messageBody.setMessageBody(messageContent.getMessageBody());
         return messageBody;
+    }
+
+    public void setMessageFromMessageIdCache(Integer appId, String messageId, Object messageContent) {
+        //appid : cache : messageId
+        String key = appId + ":" + Constants.RedisConstants.cacheMessage + ":" + messageId;
+        stringRedisTemplate.opsForValue().set(key, JSONObject.toJSONString(messageContent), 300, TimeUnit.SECONDS);
+    }
+
+    public <T> T getMessageFromMessageIdCache(Integer appId, String messageId, Class<T> clazz) {
+        //appid : cache : messageId
+        String key = appId + ":" + Constants.RedisConstants.cacheMessage + ":" + messageId;
+        String msg = stringRedisTemplate.opsForValue().get(key);
+        if (StringUtils.isBlank(msg)) {
+            return null;
+        }
+        return JSONObject.parseObject(msg, clazz);
     }
 }

@@ -70,21 +70,41 @@ public class P2PMessageService {
         String fromId = messageContent.getFromId();
         String toId = messageContent.getToId();
         Integer appId = messageContent.getAppId();
+        //将messageId从缓存里面获取消息
+        MessageContent messageFromMessageIdCache = messageStoreService.getMessageFromMessageIdCache
+                (messageContent.getAppId(), messageContent.getMessageId(), MessageContent.class);
+        if (messageFromMessageIdCache != null) {
+            threadPoolExecutor.execute(() -> {
+                ack(messageContent, ResponseVO.successResponse());
+                //2.发消息给同步在线端
+                syncToSender(messageFromMessageIdCache, messageFromMessageIdCache);
+                //3.发消息给对方在线端
+                List<ClientInfo> clientInfos = dispatchMessage(messageFromMessageIdCache);
+                if (clientInfos.isEmpty()) {
+                    //发送接收确认给发送方，要带上是服务端发送的标识
+                    reciverAck(messageFromMessageIdCache);
+                }
+            });
+            return;
+        }
+        long seq = redisSeq.doGetSeq(appId + ":" + Constants.SeqConstants.Message +
+                ":" + ConversationIdGenerate.generateP2PId(fromId, toId));
+        messageContent.setMessageSequence(seq);
         //前置校验
         //这个用户是否被禁言 是否被禁用
         //发送方和接收方是否是好友
 //        ResponseVO responseVO = imServerPermissionCheck(fromId, toId, appId);
 //        if (responseVO.isOk()) {
         threadPoolExecutor.execute(() -> {
-            long seq = redisSeq.doGetSeq(appId + ":" + Constants.SeqConstants.Message +
-                    ":" + ConversationIdGenerate.generateP2PId(fromId, toId));
-            messageContent.setMessageSequence(seq);
             //插入数据
             messageStoreService.storeP2PMessage(messageContent);
             //1.回ack成功给自己
             ack(messageContent, ResponseVO.successResponse());
             //2.发消息给同步在线端
             syncToSender(messageContent, messageContent);
+            //把messageId存进redis
+            messageStoreService.setMessageFromMessageIdCache(messageContent.getAppId(),
+                    messageContent.getMessageId(), messageContent);
             //3.发消息给对方在线端
             List<ClientInfo> clientInfos = dispatchMessage(messageContent);
             if (clientInfos.isEmpty()) {
