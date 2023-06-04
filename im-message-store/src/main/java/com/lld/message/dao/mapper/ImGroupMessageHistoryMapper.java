@@ -1,7 +1,7 @@
-package com.lld.im.service.group.dao.mapper;
+package com.lld.message.dao.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.lld.im.service.group.dao.ImGroupMessageHistoryEntity;
+import com.lld.message.dao.ImGroupMessageHistoryEntity;
 
 
 public interface ImGroupMessageHistoryMapper extends BaseMapper<ImGroupMessageHistoryEntity> {

@@ -1,0 +1,5 @@
+2023-06-04 16:49:23 -Starting MessageApplication on LAPTOP-CUHA0UV5 with PID 26636 (D:\ideadaima\mukewang\即时通讯\im-system\im-message-store\target\classes started by tangcj in D:\ideadaima\mukewang\即时通讯\im-system)
+2023-06-04 16:49:23 -The following profiles are active: dev
+2023-06-04 16:49:24 -Attempting to connect to: [localhost:5672]
+2023-06-04 16:49:24 -Created new connection: rabbitConnectionFactory#1532c619:0/SimpleConnection@c446b14 [delegate=amqp://guest@127.0.0.1:5672/, localPort= 7773]
+2023-06-04 16:49:25 -Started MessageApplication in 2.323 seconds (JVM running for 3.16)

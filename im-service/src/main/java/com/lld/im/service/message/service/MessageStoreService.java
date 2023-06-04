@@ -1,9 +1,9 @@
 package com.lld.im.service.message.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.lld.im.common.constant.Constants;
 import com.lld.im.common.enums.DelFlagEnum;
-import com.lld.im.common.model.message.GroupChatMessageContent;
-import com.lld.im.common.model.message.MessageContent;
+import com.lld.im.common.model.message.*;
 import com.lld.im.service.group.dao.ImGroupMessageHistoryEntity;
 import com.lld.im.service.group.dao.mapper.ImGroupMessageHistoryMapper;
 import com.lld.im.service.message.dao.ImMessageBodyEntity;
@@ -11,6 +11,7 @@ import com.lld.im.service.message.dao.ImMessageHistoryEntity;
 import com.lld.im.service.message.dao.mapper.ImMessageBodyMapper;
 import com.lld.im.service.message.dao.mapper.ImMessageHistoryMapper;
 import com.lld.im.service.utils.SnowflakeIdWorker;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,29 +39,43 @@ public class MessageStoreService {
     @Resource
     private ImGroupMessageHistoryMapper imGroupMessageHistoryMapper;
 
+    @Resource
+    private RabbitTemplate rabbitTemplate;
+
     @Transactional
     public void storeP2PMessage(MessageContent messageContent) {
         //messageContent转化为messageBody
-        ImMessageBodyEntity imMessageBodyEntity = extractMessageBody(messageContent);
-        //插入messageBody
-        imMessageBodyMapper.insert(imMessageBodyEntity);
-        //转化为MessageHistory
-        List<ImMessageHistoryEntity> imMessageHistoryEntities = extractToP2PMessageHistory(messageContent, imMessageBodyEntity);
-        //批量插入
-        imMessageHistoryMapper.insertBatchSomeColumn(imMessageHistoryEntities);
+//        ImMessageBodyEntity imMessageBodyEntity = extractMessageBody(messageContent);
+//        //插入messageBody
+//        imMessageBodyMapper.insert(imMessageBodyEntity);
+//        //转化为MessageHistory
+//        List<ImMessageHistoryEntity> imMessageHistoryEntities = extractToP2PMessageHistory(messageContent, imMessageBodyEntity);
+//        //批量插入
+//        imMessageHistoryMapper.insertBatchSomeColumn(imMessageHistoryEntities);
+        ImMessageBody imMessageBodyEntity = extractMessageBody(messageContent);
+        DoStoreP2PMessageDto dto = new DoStoreP2PMessageDto();
+        dto.setMessageContent(messageContent);
+        dto.setMessageBody(imMessageBodyEntity);
         messageContent.setMessageKey(imMessageBodyEntity.getMessageKey());
+        rabbitTemplate.convertAndSend(Constants.RabbitConstants.StoreP2PMessage, "", JSONObject.toJSONString(dto));
     }
 
     @Transactional
     public void storeGroupMessage(GroupChatMessageContent messageContent) {
-        ImMessageBodyEntity imMessageBodyEntity = extractMessageBody(messageContent);
-        //插入messageBody
-        imMessageBodyMapper.insert(imMessageBodyEntity);
-        //转化为MessageHistory
-        ImGroupMessageHistoryEntity imGroupMessageHistoryEntity = extractToGroupMessageHistory(messageContent, imMessageBodyEntity);
-        //插入
-        imGroupMessageHistoryMapper.insert(imGroupMessageHistoryEntity);
-        messageContent.setMessageKey(imMessageBodyEntity.getMessageKey());
+//        ImMessageBodyEntity imMessageBodyEntity = extractMessageBody(messageContent);
+//        //插入messageBody
+//        imMessageBodyMapper.insert(imMessageBodyEntity);
+//        //转化为MessageHistory
+//        ImGroupMessageHistoryEntity imGroupMessageHistoryEntity = extractToGroupMessageHistory(messageContent, imMessageBodyEntity);
+//        //插入
+//        imGroupMessageHistoryMapper.insert(imGroupMessageHistoryEntity);
+//        messageContent.setMessageKey(imMessageBodyEntity.getMessageKey());
+        ImMessageBody imMessageBody = extractMessageBody(messageContent);
+        DoStoreGroupMessageDto dto = new DoStoreGroupMessageDto();
+        dto.setMessageBody(imMessageBody);
+        dto.setGroupChatMessageContent(messageContent);
+        rabbitTemplate.convertAndSend(Constants.RabbitConstants.StoreGroupMessage, "", JSONObject.toJSONString(dto));
+        messageContent.setMessageKey(imMessageBody.getMessageKey());
     }
 
     private ImGroupMessageHistoryEntity extractToGroupMessageHistory(GroupChatMessageContent messageContent,
@@ -92,8 +107,8 @@ public class MessageStoreService {
         return list;
     }
 
-    public ImMessageBodyEntity extractMessageBody(MessageContent messageContent) {
-        ImMessageBodyEntity messageBody = new ImMessageBodyEntity();
+    public ImMessageBody extractMessageBody(MessageContent messageContent) {
+        ImMessageBody messageBody = new ImMessageBody();
         messageBody.setAppId(messageContent.getAppId());
         messageBody.setMessageKey(snowflakeIdWorker.nextId());
         messageBody.setCreateTime(System.currentTimeMillis());
