@@ -5,12 +5,15 @@ import com.lld.im.common.ResponseVO;
 import com.lld.im.common.enums.command.GroupEventCommand;
 import com.lld.im.common.model.ClientInfo;
 import com.lld.im.common.model.message.GroupChatMessageContent;
+import com.lld.im.service.group.model.req.SendGroupMessageReq;
+import com.lld.im.service.message.model.resp.SendMessageResp;
 import com.lld.im.service.message.service.CheckSendMessageService;
 import com.lld.im.service.message.service.MessageStoreService;
 import com.lld.im.service.message.service.P2PMessageService;
 import com.lld.im.service.utils.MessageProducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -91,5 +94,19 @@ public class GroupMessageService {
     private ResponseVO imServerPermissionCheck(String fromId, String toId, Integer appId) {
         ResponseVO responseVO = checkSendMessageService.checkGroupMessage(fromId, toId, appId);
         return responseVO;
+    }
+
+    public SendMessageResp send(SendGroupMessageReq req) {
+        SendMessageResp sendMessageResp = new SendMessageResp();
+        GroupChatMessageContent message = new GroupChatMessageContent();
+        BeanUtils.copyProperties(req, message);
+        messageStoreService.storeGroupMessage(message);
+        sendMessageResp.setMessageKey(message.getMessageKey());
+        sendMessageResp.setMessageTime(System.currentTimeMillis());
+        //2.发消息给同步在线端
+        syncToSender(message, message);
+        //3.发消息给对方在线端
+        dispatchMessage(message);
+        return sendMessageResp;
     }
 }

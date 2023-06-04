@@ -2,6 +2,7 @@ package com.lld.im.service.group.controller;
 
 import com.lld.im.common.ResponseVO;
 import com.lld.im.service.group.model.req.*;
+import com.lld.im.service.group.service.GroupMessageService;
 import com.lld.im.service.group.service.ImGroupService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,6 +21,9 @@ public class ImGroupController {
 
     @Resource
     private ImGroupService imGroupService;
+
+    @Resource
+    private GroupMessageService groupMessageService;
 
     @RequestMapping("/importGroup")
     public ResponseVO importGroup(@RequestBody @Validated ImportGroupReq req, Integer appId, String identifier)  {
@@ -74,5 +78,12 @@ public class ImGroupController {
         req.setAppId(appId);
         req.setOperater(identifier);
         return imGroupService.muteGroup(req);
+    }
+
+    @RequestMapping("/sendMessage")
+    public ResponseVO sendMessage(@RequestBody @Validated SendGroupMessageReq req, Integer appId, String identifier)  {
+        req.setAppId(appId);
+        req.setOperater(identifier);
+        return ResponseVO.successResponse(groupMessageService.send(req));
     }
 }
