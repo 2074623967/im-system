@@ -18,6 +18,11 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author tangcj
@@ -40,6 +45,22 @@ public class GroupMessageService {
     @Resource
     private MessageStoreService messageStoreService;
 
+    private final ThreadPoolExecutor threadPoolExecutor;
+
+    {
+        AtomicInteger num = new AtomicInteger(0);
+        threadPoolExecutor = new ThreadPoolExecutor(8, 8, 60, TimeUnit.SECONDS,
+                new LinkedBlockingDeque<>(1000), new ThreadFactory() {
+            @Override
+            public Thread newThread(Runnable r) {
+                Thread thread = new Thread(r);
+                thread.setDaemon(true);
+                thread.setName("message-process-thread-" + num.getAndIncrement());
+                return thread;
+            }
+        });
+    }
+
     public void process(GroupChatMessageContent messageContent) {
         logger.info("消息开始处理：{}", messageContent.getMessageId());
         String fromId = messageContent.getFromId();
@@ -50,15 +71,17 @@ public class GroupMessageService {
         //发送方和接收方是否是好友
         ResponseVO responseVO = imServerPermissionCheck(fromId, toId, appId);
         if (responseVO.isOk()) {
-            //插入数据
-            messageStoreService.storeGroupMessage(messageContent);
-            //1.回ack成功给自己
-            ack(messageContent, responseVO);
-            //2.发消息给同步在线端
-            syncToSender(messageContent, messageContent);
-            //3.发消息给对方在线端
-            dispatchMessage(messageContent);
-            logger.info("消息处理完成：{}", messageContent.getMessageId());
+            threadPoolExecutor.execute(() -> {
+                //插入数据
+                messageStoreService.storeGroupMessage(messageContent);
+                //1.回ack成功给自己
+                ack(messageContent, responseVO);
+                //2.发消息给同步在线端
+                syncToSender(messageContent, messageContent);
+                //3.发消息给对方在线端
+                dispatchMessage(messageContent);
+                logger.info("消息处理完成：{}", messageContent.getMessageId());
+            });
         } else {
             //告诉客户端失败了
             //ack
