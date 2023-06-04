@@ -7,9 +7,12 @@ import com.lld.im.codec.pack.LoginPack;
 import com.lld.im.codec.proto.Message;
 import com.lld.im.common.constant.Constants;
 import com.lld.im.common.enums.ImConnectStatusEnum;
+import com.lld.im.common.enums.command.GroupEventCommand;
+import com.lld.im.common.enums.command.MessageCommand;
 import com.lld.im.common.enums.command.SystemCommand;
 import com.lld.im.common.model.UserClientDto;
 import com.lld.im.common.model.UserSession;
+import com.lld.im.tcp.publish.MqMessageProducer;
 import com.lld.im.tcp.redis.RedisManager;
 import com.lld.im.tcp.utils.SessionSocketHolder;
 import io.netty.channel.ChannelHandlerContext;
@@ -93,8 +96,11 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<Message> {
             SessionSocketHolder.removeUserSession((NioSocketChannel) ctx.channel());
         } else if (command == SystemCommand.PING.getCommand()) {
             ctx.channel().attr(AttributeKey.valueOf(Constants.ReadTime)).set(System.currentTimeMillis());
-        } else {
+        } else if (command == MessageCommand.MSG_P2P.getCommand()
+                || command == GroupEventCommand.MSG_GROUP.getCommand()) {
 
+        } else {
+            MqMessageProducer.sendMessage(msg, command);
         }
     }
 }
