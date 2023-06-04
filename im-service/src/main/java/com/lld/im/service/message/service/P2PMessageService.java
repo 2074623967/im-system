@@ -28,6 +28,9 @@ public class P2PMessageService {
     @Resource
     private MessageProducer messageProducer;
 
+    @Resource
+    private MessageStoreService messageStoreService;
+
     public void process(MessageContent messageContent) {
         logger.info("消息开始处理：{}", messageContent.getMessageId());
         String fromId = messageContent.getFromId();
@@ -38,6 +41,8 @@ public class P2PMessageService {
         //发送方和接收方是否是好友
         ResponseVO responseVO = imServerPermissionCheck(fromId, toId, appId);
         if (responseVO.isOk()) {
+            //插入数据
+            messageStoreService.storeP2PMessage(messageContent);
             //1.回ack成功给自己
             ack(messageContent, responseVO);
             //2.发消息给同步在线端
