@@ -2,6 +2,7 @@ package com.lld.im.service.group.service;
 
 import com.lld.im.codec.pack.message.ChatMessageAck;
 import com.lld.im.common.ResponseVO;
+import com.lld.im.common.constant.Constants;
 import com.lld.im.common.enums.command.GroupEventCommand;
 import com.lld.im.common.model.ClientInfo;
 import com.lld.im.common.model.message.GroupChatMessageContent;
@@ -10,6 +11,7 @@ import com.lld.im.service.message.model.resp.SendMessageResp;
 import com.lld.im.service.message.service.CheckSendMessageService;
 import com.lld.im.service.message.service.MessageStoreService;
 import com.lld.im.service.message.service.P2PMessageService;
+import com.lld.im.service.seq.RedisSeq;
 import com.lld.im.service.utils.MessageProducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +47,9 @@ public class GroupMessageService {
     @Resource
     private MessageStoreService messageStoreService;
 
+    @Resource
+    private RedisSeq redisSeq;
+
     private final ThreadPoolExecutor threadPoolExecutor;
 
     {
@@ -63,12 +68,27 @@ public class GroupMessageService {
 
     public void process(GroupChatMessageContent messageContent) {
         logger.info("消息开始处理：{}", messageContent.getMessageId());
-        String fromId = messageContent.getFromId();
-        String toId = messageContent.getToId();
-        Integer appId = messageContent.getAppId();
+//        String fromId = messageContent.getFromId();
+//        String toId = messageContent.getToId();
+//        Integer appId = messageContent.getAppId();
         //前置校验
         //这个用户是否被禁言 是否被禁用
         //发送方和接收方是否是好友
+        GroupChatMessageContent messageFromMessageIdCache = messageStoreService.getMessageFromMessageIdCache(messageContent.getAppId(),
+                messageContent.getMessageId(), GroupChatMessageContent.class);
+        if (messageFromMessageIdCache != null) {
+            threadPoolExecutor.execute(() -> {
+                //1.回ack成功给自己
+                ack(messageContent, ResponseVO.successResponse());
+                //2.发消息给同步在线端
+                syncToSender(messageContent, messageContent);
+                //3.发消息给对方在线端
+                dispatchMessage(messageContent);
+            });
+        }
+        long seq = redisSeq.doGetSeq(messageContent.getAppId() + ":" + Constants.SeqConstants.GroupMessage
+                + messageContent.getGroupId());
+        messageContent.setMessageSequence(seq);
 //        ResponseVO responseVO = imServerPermissionCheck(fromId, toId, appId);
 //        if (responseVO.isOk()) {
         threadPoolExecutor.execute(() -> {
@@ -78,6 +98,9 @@ public class GroupMessageService {
             ack(messageContent, ResponseVO.successResponse());
             //2.发消息给同步在线端
             syncToSender(messageContent, messageContent);
+            //把messageId存进redis
+            messageStoreService.setMessageFromMessageIdCache(messageContent.getAppId(),
+                    messageContent.getMessageId(), messageContent);
             //3.发消息给对方在线端
             dispatchMessage(messageContent);
             logger.info("消息处理完成：{}", messageContent.getMessageId());
