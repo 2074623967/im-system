@@ -71,7 +71,6 @@ public class StoreMessageService {
                 doStoreGroupMessageDto.getGroupChatMessageContent(),
                 doStoreGroupMessageDto.getImMessageBodyEntity());
         imGroupMessageHistoryMapper.insert(imGroupMessageHistoryEntity);
-
     }
 
     private ImGroupMessageHistoryEntity extractToGroupMessageHistory(GroupChatMessageContent messageContent,

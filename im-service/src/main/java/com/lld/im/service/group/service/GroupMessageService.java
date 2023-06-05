@@ -55,7 +55,7 @@ public class GroupMessageService {
             public Thread newThread(Runnable r) {
                 Thread thread = new Thread(r);
                 thread.setDaemon(true);
-                thread.setName("message-process-thread-" + num.getAndIncrement());
+                thread.setName("message-group-thread-" + num.getAndIncrement());
                 return thread;
             }
         });
@@ -69,24 +69,24 @@ public class GroupMessageService {
         //前置校验
         //这个用户是否被禁言 是否被禁用
         //发送方和接收方是否是好友
-        ResponseVO responseVO = imServerPermissionCheck(fromId, toId, appId);
-        if (responseVO.isOk()) {
-            threadPoolExecutor.execute(() -> {
-                //插入数据
-                messageStoreService.storeGroupMessage(messageContent);
-                //1.回ack成功给自己
-                ack(messageContent, responseVO);
-                //2.发消息给同步在线端
-                syncToSender(messageContent, messageContent);
-                //3.发消息给对方在线端
-                dispatchMessage(messageContent);
-                logger.info("消息处理完成：{}", messageContent.getMessageId());
-            });
-        } else {
-            //告诉客户端失败了
-            //ack
-            ack(messageContent, responseVO);
-        }
+//        ResponseVO responseVO = imServerPermissionCheck(fromId, toId, appId);
+//        if (responseVO.isOk()) {
+        threadPoolExecutor.execute(() -> {
+            //插入数据
+            messageStoreService.storeGroupMessage(messageContent);
+            //1.回ack成功给自己
+            ack(messageContent, ResponseVO.successResponse());
+            //2.发消息给同步在线端
+            syncToSender(messageContent, messageContent);
+            //3.发消息给对方在线端
+            dispatchMessage(messageContent);
+            logger.info("消息处理完成：{}", messageContent.getMessageId());
+        });
+//        } else {
+//            //告诉客户端失败了
+//            //ack
+//            ack(messageContent, responseVO);
+//        }
     }
 
     private void dispatchMessage(GroupChatMessageContent messageContent) {
