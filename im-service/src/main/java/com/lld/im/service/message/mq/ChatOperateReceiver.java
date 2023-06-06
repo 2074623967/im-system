@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.lld.im.common.constant.Constants;
 import com.lld.im.common.enums.command.MessageCommand;
 import com.lld.im.common.model.message.MessageContent;
+import com.lld.im.common.model.message.MessageReadedContent;
 import com.lld.im.common.model.message.MessageReciveAckContent;
 import com.lld.im.service.message.service.MessageSyncService;
 import com.lld.im.service.message.service.P2PMessageService;
@@ -62,6 +63,10 @@ public class ChatOperateReceiver {
                 //消息接收确认
                 MessageReciveAckContent messageContent = jsonObject.toJavaObject(MessageReciveAckContent.class);
                 messageSyncService.receiveMark(messageContent);
+            } else if (command.equals(MessageCommand.MSG_READED.getCommand())) {
+                //消息已读确认
+                MessageReadedContent messageContent = jsonObject.toJavaObject(MessageReadedContent.class);
+                messageSyncService.readMark(messageContent);
             }
             channel.basicAck(deliveryTag, false);
         } catch (Exception e) {

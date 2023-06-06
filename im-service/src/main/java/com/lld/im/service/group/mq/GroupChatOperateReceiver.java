@@ -2,10 +2,13 @@ package com.lld.im.service.group.mq;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import com.lld.im.common.constant.Constants;
 import com.lld.im.common.enums.command.GroupEventCommand;
 import com.lld.im.common.model.message.GroupChatMessageContent;
+import com.lld.im.common.model.message.MessageReadedContent;
 import com.lld.im.service.group.service.GroupMessageService;
+import com.lld.im.service.message.service.MessageSyncService;
 import com.lld.im.service.message.service.P2PMessageService;
 import com.rabbitmq.client.Channel;
 import org.slf4j.Logger;
@@ -35,6 +38,9 @@ public class GroupChatOperateReceiver {
     @Resource
     private GroupMessageService groupMessageService;
 
+    @Resource
+    private MessageSyncService messageSyncService;
+
     @RabbitListener(
             bindings = @QueueBinding(
                     value = @Queue(value = Constants.RabbitConstants.Im2GroupService, durable = "true"),
@@ -54,6 +60,10 @@ public class GroupChatOperateReceiver {
                 //处理消息
                 GroupChatMessageContent messageContent = jsonObject.toJavaObject(GroupChatMessageContent.class);
                 groupMessageService.process(messageContent);
+            } else if (command.equals(GroupEventCommand.MSG_GROUP_READED.getCommand())) {
+                MessageReadedContent messageReaded = JSON.parseObject(msg, new TypeReference<MessageReadedContent>() {
+                }.getType());
+                messageSyncService.groupReadMark(messageReaded);
             }
             channel.basicAck(deliveryTag, false);
         } catch (Exception e) {
