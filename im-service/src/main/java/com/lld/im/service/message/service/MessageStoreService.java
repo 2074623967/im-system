@@ -1,9 +1,12 @@
 package com.lld.im.service.message.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.lld.im.common.config.AppConfig;
 import com.lld.im.common.constant.Constants;
+import com.lld.im.common.enums.ConversationTypeEnum;
 import com.lld.im.common.enums.DelFlagEnum;
 import com.lld.im.common.model.message.*;
+import com.lld.im.service.conversation.service.ConversationService;
 import com.lld.im.service.group.dao.ImGroupMessageHistoryEntity;
 import com.lld.im.service.group.dao.mapper.ImGroupMessageHistoryMapper;
 import com.lld.im.service.message.dao.ImMessageBodyEntity;
@@ -15,6 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,6 +51,12 @@ public class MessageStoreService {
 
     @Resource
     private StringRedisTemplate stringRedisTemplate;
+
+    @Resource
+    private ConversationService conversationService;
+
+    @Resource
+    private AppConfig appConfig;
 
     @Transactional
     public void storeP2PMessage(MessageContent messageContent) {
@@ -140,5 +150,63 @@ public class MessageStoreService {
             return null;
         }
         return JSONObject.parseObject(msg, clazz);
+    }
+
+    /**
+     * 存储单人离线消息
+     *
+     * @param offlineMessage
+     * @return void
+     **/
+    public void storeOfflineMessage(OfflineMessageContent offlineMessage) {
+        // 找到fromId的队列
+        String fromKey = offlineMessage.getAppId() + ":" + Constants.RedisConstants.OfflineMessage + ":" + offlineMessage.getFromId();
+        // 找到toId的队列
+        String toKey = offlineMessage.getAppId() + ":" + Constants.RedisConstants.OfflineMessage + ":" + offlineMessage.getToId();
+        ZSetOperations<String, String> operations = stringRedisTemplate.opsForZSet();
+        //判断 队列中的数据是否超过设定值
+        if (operations.zCard(fromKey) >= appConfig.getOfflineMessageCount()) {
+            operations.removeRange(fromKey, 0, 0);
+        }
+        offlineMessage.setConversationId(conversationService.convertConversationId(ConversationTypeEnum.P2P.getCode(),
+                offlineMessage.getFromId(), offlineMessage.getToId()
+        ));
+        // 插入 数据 根据messageKey 作为分值
+        operations.add(fromKey, JSONObject.toJSONString(offlineMessage), offlineMessage.getMessageKey());
+        //判断 队列中的数据是否超过设定值
+        if (operations.zCard(toKey) >= appConfig.getOfflineMessageCount()) {
+            operations.removeRange(toKey, 0, 0);
+        }
+        offlineMessage.setConversationId(conversationService.convertConversationId(ConversationTypeEnum.P2P.getCode(),
+                offlineMessage.getToId(), offlineMessage.getFromId()
+        ));
+        // 插入 数据 根据messageKey 作为分值
+        operations.add(toKey, JSONObject.toJSONString(offlineMessage), offlineMessage.getMessageKey());
+    }
+
+    /**
+     * 存储多人离线消息
+     *
+     * @param offlineMessage
+     * @return void
+     **/
+    public void storeGroupOfflineMessage(OfflineMessageContent offlineMessage, List<String> memberIds) {
+        ZSetOperations<String, String> operations = stringRedisTemplate.opsForZSet();
+        //判断 队列中的数据是否超过设定值
+        offlineMessage.setConversationType(ConversationTypeEnum.GROUP.getCode());
+        for (String memberId : memberIds) {
+            // 找到toId的队列
+            String toKey = offlineMessage.getAppId() + ":" +
+                    Constants.RedisConstants.OfflineMessage + ":" +
+                    memberId;
+            offlineMessage.setConversationId(conversationService.convertConversationId(ConversationTypeEnum.GROUP.getCode(),
+                    memberId, offlineMessage.getToId()
+            ));
+            if (operations.zCard(toKey) >= appConfig.getOfflineMessageCount()) {
+                operations.removeRange(toKey, 0, 0);
+            }
+            // 插入 数据 根据messageKey 作为分值
+            operations.add(toKey, JSONObject.toJSONString(offlineMessage), offlineMessage.getMessageKey());
+        }
     }
 }

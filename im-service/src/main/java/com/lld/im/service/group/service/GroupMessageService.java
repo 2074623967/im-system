@@ -6,6 +6,7 @@ import com.lld.im.common.constant.Constants;
 import com.lld.im.common.enums.command.GroupEventCommand;
 import com.lld.im.common.model.ClientInfo;
 import com.lld.im.common.model.message.GroupChatMessageContent;
+import com.lld.im.common.model.message.OfflineMessageContent;
 import com.lld.im.service.group.model.req.SendGroupMessageReq;
 import com.lld.im.service.message.model.resp.SendMessageResp;
 import com.lld.im.service.message.service.CheckSendMessageService;
@@ -94,6 +95,14 @@ public class GroupMessageService {
         threadPoolExecutor.execute(() -> {
             //插入数据
             messageStoreService.storeGroupMessage(messageContent);
+            //插入离线消息
+            List<String> groupMemberId = imGroupMemberService.getGroupMemberId(messageContent.getGroupId(),
+                    messageContent.getAppId());
+            messageContent.setMemberId(groupMemberId);
+            OfflineMessageContent offlineMessageContent = new OfflineMessageContent();
+            BeanUtils.copyProperties(messageContent, offlineMessageContent);
+            offlineMessageContent.setToId(messageContent.getGroupId());
+            messageStoreService.storeGroupOfflineMessage(offlineMessageContent, groupMemberId);
             //1.回ack成功给自己
             ack(messageContent, ResponseVO.successResponse());
             //2.发消息给同步在线端

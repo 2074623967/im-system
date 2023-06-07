@@ -4,9 +4,11 @@ import com.lld.im.codec.pack.message.ChatMessageAck;
 import com.lld.im.codec.pack.message.MessageReciveServerAckPack;
 import com.lld.im.common.ResponseVO;
 import com.lld.im.common.constant.Constants;
+import com.lld.im.common.enums.ConversationTypeEnum;
 import com.lld.im.common.enums.command.MessageCommand;
 import com.lld.im.common.model.ClientInfo;
 import com.lld.im.common.model.message.MessageContent;
+import com.lld.im.common.model.message.OfflineMessageContent;
 import com.lld.im.service.message.model.req.SendMessageReq;
 import com.lld.im.service.message.model.resp.SendMessageResp;
 import com.lld.im.service.seq.RedisSeq;
@@ -62,6 +64,16 @@ public class P2PMessageService {
         });
     }
 
+    //离线
+    //存储介质
+    //1.mysql
+    //2.redis
+    //怎么存？
+    //list
+    //set
+
+    //历史消息
+
     //发送方客户端时间
     //messageKey
     //redis 1 2 3
@@ -98,6 +110,11 @@ public class P2PMessageService {
         threadPoolExecutor.execute(() -> {
             //插入数据
             messageStoreService.storeP2PMessage(messageContent);
+            //插入离线消息
+            OfflineMessageContent offlineMessageContent = new OfflineMessageContent();
+            BeanUtils.copyProperties(messageContent, offlineMessageContent);
+            offlineMessageContent.setConversationType(ConversationTypeEnum.P2P.getCode());
+            messageStoreService.storeOfflineMessage(offlineMessageContent);
             //1.回ack成功给自己
             ack(messageContent, ResponseVO.successResponse());
             //2.发消息给同步在线端
