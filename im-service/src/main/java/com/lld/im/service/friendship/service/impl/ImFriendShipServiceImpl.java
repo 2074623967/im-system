@@ -431,6 +431,12 @@ public class ImFriendShipServiceImpl implements ImFriendShipService {
             toItem.setCreateTime(System.currentTimeMillis());
             toItem.setBlack(FriendShipStatusEnum.BLACK_STATUS_NORMAL.getCode());
             int insert = imFriendShipMapper.insert(toItem);
+        } else {
+            if (toItem.getStatus() != FriendShipStatusEnum.FRIEND_STATUS_NORMAL.getCode()) {
+                ImFriendShipEntity update = new ImFriendShipEntity();
+                update.setStatus(FriendShipStatusEnum.FRIEND_STATUS_NORMAL.getCode());
+                imFriendShipMapper.update(update, toQuery);
+            }
         }
         //发送给from
         AddFriendPack addFriendPack = new AddFriendPack();
