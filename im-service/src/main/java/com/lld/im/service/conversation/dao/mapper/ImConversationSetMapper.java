@@ -7,4 +7,6 @@ import org.apache.ibatis.annotations.Param;
 public interface ImConversationSetMapper extends BaseMapper<ImConversationSetEntity> {
 
     void readMark(@Param("imConversationSetEntity") ImConversationSetEntity imConversationSetEntity);
+
+    Long geConversationSetMaxSeq(@Param("appId") Integer appId, @Param("userId") String userId);
 }

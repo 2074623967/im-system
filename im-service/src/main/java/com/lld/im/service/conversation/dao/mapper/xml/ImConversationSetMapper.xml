@@ -9,4 +9,11 @@
           and app_id = #{imConversationSetEntity.appId}
           AND readed_sequence &lt; #{imConversationSetEntity.readedSequence}
     </update>
+
+    <select id="geConversationSetMaxSeq" resultType="java.lang.Long">
+        select max(sequence)
+        from im_conversation_set
+        where app_id = #{appId}
+          AND from_id = #{userId}
+    </select>
 </mapper>
