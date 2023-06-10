@@ -19,4 +19,6 @@ public interface ImFriendShipMapper extends BaseMapper<ImFriendShipEntity> {
     List<CheckFriendShipResp> checkFriendShip(@Param("req") CheckFriendShipReq req);
 
     List<CheckFriendShipResp> checkFriendShipBoth(@Param("req")CheckFriendShipReq req);
+
+    Long getFriendShipMaxSeq(@Param("appId") Integer appId, @Param("userId") String userId);
 }

@@ -34,4 +34,11 @@
         ) as b
         on a.fromId = b.toId AND b.fromId = a.toId
     </select>
+
+    <select id="getFriendShipMaxSeq" resultType="java.lang.Long">
+        select max(friend_sequence)
+        from im_friendship
+        where app_id = #{appId}
+          AND from_id = #{userId}
+    </select>
 </mapper>
