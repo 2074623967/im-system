@@ -1,8 +1,10 @@
 package com.lld.im.service.message.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.lld.im.codec.pack.message.ChatMessageAck;
 import com.lld.im.codec.pack.message.MessageReciveServerAckPack;
 import com.lld.im.common.ResponseVO;
+import com.lld.im.common.config.AppConfig;
 import com.lld.im.common.constant.Constants;
 import com.lld.im.common.enums.ConversationTypeEnum;
 import com.lld.im.common.enums.command.MessageCommand;
@@ -12,6 +14,7 @@ import com.lld.im.common.model.message.OfflineMessageContent;
 import com.lld.im.service.message.model.req.SendMessageReq;
 import com.lld.im.service.message.model.resp.SendMessageResp;
 import com.lld.im.service.seq.RedisSeq;
+import com.lld.im.service.utils.CallbackService;
 import com.lld.im.service.utils.ConversationIdGenerate;
 import com.lld.im.service.utils.MessageProducer;
 import org.slf4j.Logger;
@@ -47,6 +50,12 @@ public class P2PMessageService {
 
     @Resource
     private RedisSeq redisSeq;
+
+    @Resource
+    private AppConfig appConfig;
+
+    @Resource
+    private CallbackService callbackService;
 
     private final ThreadPoolExecutor threadPoolExecutor;
 
@@ -99,6 +108,16 @@ public class P2PMessageService {
             });
             return;
         }
+        //回调
+        ResponseVO responseVO = ResponseVO.successResponse();
+        if (appConfig.isSendMessageAfterCallback()) {
+            responseVO = callbackService.beforeCallback(messageContent.getAppId(), Constants.CallbackCommand.SendMessageBefore,
+                    JSONObject.toJSONString(messageContent));
+        }
+        if (!responseVO.isOk()) {
+            ack(messageContent, responseVO);
+            return;
+        }
         long seq = redisSeq.doGetSeq(appId + ":" + Constants.SeqConstants.Message +
                 ":" + ConversationIdGenerate.generateP2PId(fromId, toId));
         messageContent.setMessageSequence(seq);
@@ -127,6 +146,10 @@ public class P2PMessageService {
             if (clientInfos.isEmpty()) {
                 //发送接收确认给发送方,要带上是服务端发送的标识
                 reciverAck(messageContent);
+            }
+            if (appConfig.isSendMessageAfterCallback()) {
+                callbackService.callback(messageContent.getAppId(), Constants.CallbackCommand.SendMessageAfter,
+                        JSONObject.toJSONString(messageContent));
             }
             logger.info("消息处理完成：{}", messageContent.getMessageId());
         });
