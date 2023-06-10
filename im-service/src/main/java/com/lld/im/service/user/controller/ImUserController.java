@@ -5,11 +5,9 @@ import com.lld.im.common.ResponseVO;
 import com.lld.im.common.router.RouteHandle;
 import com.lld.im.common.router.RouteInfo;
 import com.lld.im.common.utils.RouteInfoParseUtil;
-import com.lld.im.service.user.model.req.DeleteUserReq;
-import com.lld.im.service.user.model.req.GetUserSequenceReq;
-import com.lld.im.service.user.model.req.ImportUserReq;
-import com.lld.im.service.user.model.req.LoginReq;
+import com.lld.im.service.user.model.req.*;
 import com.lld.im.service.user.service.ImUserService;
+import com.lld.im.service.user.service.ImUserStatusService;
 import com.lld.im.service.utils.ZKit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -34,6 +32,9 @@ public class ImUserController {
 
     @Resource
     private RouteHandle routeHandle;
+
+    @Resource
+    private ImUserStatusService imUserStatusService;
 
     @Resource
     private ZKit zkit;
@@ -80,5 +81,14 @@ public class ImUserController {
     public ResponseVO getUserSequence(@RequestBody @Validated GetUserSequenceReq req, Integer appId) {
         req.setAppId(appId);
         return imUserService.getUserSequence(req);
+    }
+
+    @RequestMapping("/subscribeUserOnlineStatus")
+    public ResponseVO subscribeUserOnlineStatus(@RequestBody @Validated SubscribeUserOnlineStatusReq req,
+                                                Integer appId, String identifier) {
+        req.setAppId(appId);
+        req.setOperater(identifier);
+        imUserStatusService.subscribeUserOnlineStatus(req);
+        return ResponseVO.successResponse();
     }
 }

@@ -7,6 +7,7 @@ import com.lld.im.common.model.ClientInfo;
 import com.lld.im.common.model.UserSession;
 import com.lld.im.service.friendship.service.ImFriendShipService;
 import com.lld.im.service.user.model.UserStatusChangeNotifyContent;
+import com.lld.im.service.user.model.req.SubscribeUserOnlineStatusReq;
 import com.lld.im.service.user.service.ImUserStatusService;
 import com.lld.im.service.utils.MessageProducer;
 import com.lld.im.service.utils.UserSessionUtils;
@@ -58,6 +59,7 @@ public class ImUserStatusServiceImpl implements ImUserStatusService {
             messageProducer.sendToUser(fid, UserEventCommand.USER_ONLINE_STATUS_CHANGE_NOTIFY,
                     pack, appId);
         }
+        //临时订阅用户通知
         String userKey = appId + ":" + Constants.RedisConstants.subscribe + userId;
         Set<Object> keys = stringRedisTemplate.opsForHash().keys(userKey);
         for (Object key : keys) {
@@ -69,6 +71,26 @@ public class ImUserStatusServiceImpl implements ImUserStatusService {
             } else {
                 stringRedisTemplate.opsForHash().delete(userKey, filed);
             }
+        }
+    }
+
+    @Override
+    public void subscribeUserOnlineStatus(SubscribeUserOnlineStatusReq req) {
+        // A
+        // Z
+        // A - B C D
+        // C：A Z F
+        //hash
+        // B - [A:xxxx,C:xxxx]
+        // C - []
+        // D - []
+        Long subExpireTime = 0L;
+        if (req != null && req.getSubTime() > 0) {
+            subExpireTime = System.currentTimeMillis() + req.getSubTime();
+        }
+        for (String beSubUserId : req.getSubUserId()) {
+            String userKey = req.getAppId() + ":" + Constants.RedisConstants.subscribe + ":" + beSubUserId;
+            stringRedisTemplate.opsForHash().put(userKey, req.getOperater(), subExpireTime.toString());
         }
     }
 }
