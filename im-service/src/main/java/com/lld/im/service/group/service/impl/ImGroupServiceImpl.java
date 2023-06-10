@@ -27,6 +27,7 @@ import com.lld.im.service.group.model.resp.GetJoinedGroupResp;
 import com.lld.im.service.group.model.resp.GetRoleInGroupResp;
 import com.lld.im.service.group.service.ImGroupMemberService;
 import com.lld.im.service.group.service.ImGroupService;
+import com.lld.im.service.seq.RedisSeq;
 import com.lld.im.service.utils.CallbackService;
 import com.lld.im.service.utils.GroupMessageProducer;
 import com.lld.im.service.utils.MessageProducer;
@@ -64,6 +65,9 @@ public class ImGroupServiceImpl implements ImGroupService {
 
     @Resource
     private GroupMessageProducer groupMessageProducer;
+
+    @Resource
+    private RedisSeq redisSeq;
 
     @Override
     public ResponseVO importGroup(ImportGroupReq req) {
@@ -142,8 +146,10 @@ public class ImGroupServiceImpl implements ImGroupService {
                 throw new ApplicationException(GroupErrorCode.THIS_OPERATE_NEED_MANAGER_ROLE);
             }
         }
+        long seq = redisSeq.doGetSeq(req.getAppId() + ":" + Constants.SeqConstants.Group);
         ImGroupEntity update = new ImGroupEntity();
         BeanUtils.copyProperties(req, update);
+        update.setSequence(seq);
         update.setUpdateTime(System.currentTimeMillis());
         int row = imGroupMapper.update(update, query);
         if (row != 1) {
@@ -182,7 +188,9 @@ public class ImGroupServiceImpl implements ImGroupService {
         if (req.getGroupType() == GroupTypeEnum.PUBLIC.getCode() && StringUtils.isBlank(req.getOwnerId())) {
             throw new ApplicationException(GroupErrorCode.PUBLIC_GROUP_MUST_HAVE_OWNER);
         }
+        long seq = redisSeq.doGetSeq(req.getAppId() + ":" + Constants.SeqConstants.Group);
         ImGroupEntity imGroupEntity = new ImGroupEntity();
+        imGroupEntity.setSequence(seq);
         imGroupEntity.setCreateTime(System.currentTimeMillis());
         imGroupEntity.setStatus(GroupStatusEnum.NORMAL.getCode());
         BeanUtils.copyProperties(req, imGroupEntity);
@@ -290,7 +298,9 @@ public class ImGroupServiceImpl implements ImGroupService {
                 throw new ApplicationException(GroupErrorCode.THIS_OPERATE_NEED_OWNER_ROLE);
             }
         }
+        long seq = redisSeq.doGetSeq(req.getAppId() + ":" + Constants.SeqConstants.Group);
         ImGroupEntity update = new ImGroupEntity();
+        update.setSequence(seq);
         update.setStatus(GroupStatusEnum.DESTROY.getCode());
         int update1 = imGroupMapper.update(update, objectQueryWrapper);
         if (update1 != 1) {
@@ -304,6 +314,7 @@ public class ImGroupServiceImpl implements ImGroupService {
                     JSONObject.toJSONString(dto));
         }
         DestroyGroupPack pack = new DestroyGroupPack();
+        pack.setSequence(seq);
         pack.setGroupId(req.getGroupId());
         groupMessageProducer.producer(req.getOperater(), GroupEventCommand.DESTROY_GROUP, pack,
                 new ClientInfo(req.getAppId(), req.getClientType(), req.getImei()));
@@ -331,7 +342,9 @@ public class ImGroupServiceImpl implements ImGroupService {
         if (imGroupEntity.getStatus() == GroupStatusEnum.DESTROY.getCode()) {
             throw new ApplicationException(GroupErrorCode.GROUP_IS_DESTROY);
         }
+        long seq = redisSeq.doGetSeq(req.getAppId() + ":" + Constants.SeqConstants.Group);
         ImGroupEntity updateGroup = new ImGroupEntity();
+        updateGroup.setSequence(seq);
         updateGroup.setOwnerId(req.getOwnerId());
         UpdateWrapper<ImGroupEntity> updateGroupWrapper = new UpdateWrapper<>();
         updateGroupWrapper.eq("app_id", req.getAppId());

@@ -17,6 +17,7 @@ import com.lld.im.service.conversation.model.DeleteConversationReq;
 import com.lld.im.service.conversation.model.UpdateConversationReq;
 import com.lld.im.service.seq.RedisSeq;
 import com.lld.im.service.utils.MessageProducer;
+import com.lld.im.service.utils.WriteUserSeq;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +41,9 @@ public class ConversationService {
 
     @Resource
     private RedisSeq redisSeq;
+
+    @Resource
+    private WriteUserSeq writeUserSeq;
 
     public String convertConversationId(Integer type, String fromId, String toId) {
         return type + "_" + fromId + "_" + toId;
@@ -65,11 +69,15 @@ public class ConversationService {
             imConversationSetEntity.setToId(toId);
             imConversationSetEntity.setSequence(seq);
             imConversationSetMapper.insert(imConversationSetEntity);
+            writeUserSeq.writeUserSeq(messageReadedContent.getAppId(), messageReadedContent.getFromId(),
+                    Constants.SeqConstants.Conversation,seq);
         } else {
             long seq = redisSeq.doGetSeq(messageReadedContent.getAppId() + ":" + Constants.SeqConstants.Conversation);
             imConversationSetEntity.setSequence(seq);
             imConversationSetEntity.setReadedSequence(messageReadedContent.getMessageSequence());
             imConversationSetMapper.readMark(imConversationSetEntity);
+            writeUserSeq.writeUserSeq(messageReadedContent.getAppId(), messageReadedContent.getFromId(),
+                    Constants.SeqConstants.Conversation,seq);
         }
     }
 
@@ -121,6 +129,7 @@ public class ConversationService {
             }
             imConversationSetEntity.setSequence(seq);
             imConversationSetMapper.update(imConversationSetEntity, queryWrapper);
+            writeUserSeq.writeUserSeq(req.getAppId(), req.getFromId(), Constants.SeqConstants.Conversation, seq);
             UpdateConversationPack pack = new UpdateConversationPack();
             pack.setConversationId(req.getConversationId());
             pack.setIsMute(imConversationSetEntity.getIsMute());
@@ -128,8 +137,7 @@ public class ConversationService {
             pack.setSequence(seq);
             pack.setConversationType(imConversationSetEntity.getConversationType());
             messageProducer.sendToUserExceptClient(req.getFromId(), ConversationEventCommand.CONVERSATION_UPDATE, pack,
-                    new ClientInfo(req.getAppId(), req.getClientType(),
-                            req.getImei()));
+                    new ClientInfo(req.getAppId(), req.getClientType(), req.getImei()));
         }
         return ResponseVO.successResponse();
     }
