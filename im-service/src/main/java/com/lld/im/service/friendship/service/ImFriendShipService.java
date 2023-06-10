@@ -5,6 +5,8 @@ import com.lld.im.common.model.RequestBase;
 import com.lld.im.common.model.SyncReq;
 import com.lld.im.service.friendship.model.req.*;
 
+import java.util.List;
+
 public interface ImFriendShipService {
 
     ResponseVO importFriendShip(ImporFriendShipReq req);
@@ -32,4 +34,6 @@ public interface ImFriendShipService {
     ResponseVO doAddFriend(RequestBase requestBase, String fromId, FriendDto dto, Integer appId);
 
     ResponseVO syncFriendshipList(SyncReq req);
+
+    List<String> getAllFriendId(String userId, Integer appId);
 }
