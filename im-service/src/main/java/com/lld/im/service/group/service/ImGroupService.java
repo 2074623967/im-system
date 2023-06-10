@@ -26,4 +26,6 @@ public interface ImGroupService {
     ResponseVO muteGroup(MuteGroupReq req);
 
     ResponseVO syncJoinedGroupList(SyncReq req);
+
+    Long getUserGroupMaxSeq(String userId, Integer appId);
 }

@@ -6,6 +6,7 @@ import com.lld.im.common.router.RouteHandle;
 import com.lld.im.common.router.RouteInfo;
 import com.lld.im.common.utils.RouteInfoParseUtil;
 import com.lld.im.service.user.model.req.DeleteUserReq;
+import com.lld.im.service.user.model.req.GetUserSequenceReq;
 import com.lld.im.service.user.model.req.ImportUserReq;
 import com.lld.im.service.user.model.req.LoginReq;
 import com.lld.im.service.user.service.ImUserService;
@@ -75,4 +76,9 @@ public class ImUserController {
         return ResponseVO.errorResponse();
     }
 
+    @RequestMapping("/getUserSequence")
+    public ResponseVO getUserSequence(@RequestBody @Validated GetUserSequenceReq req, Integer appId) {
+        req.setAppId(appId);
+        return imUserService.getUserSequence(req);
+    }
 }
