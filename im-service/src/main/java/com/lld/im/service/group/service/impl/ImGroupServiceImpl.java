@@ -18,6 +18,8 @@ import com.lld.im.common.enums.GroupTypeEnum;
 import com.lld.im.common.enums.command.GroupEventCommand;
 import com.lld.im.common.exception.ApplicationException;
 import com.lld.im.common.model.ClientInfo;
+import com.lld.im.common.model.SyncReq;
+import com.lld.im.common.model.SyncResp;
 import com.lld.im.service.group.dao.ImGroupEntity;
 import com.lld.im.service.group.dao.mapper.ImGroupMapper;
 import com.lld.im.service.group.model.callback.DestroyGroupCallbackDto;
@@ -53,9 +55,6 @@ public class ImGroupServiceImpl implements ImGroupService {
 
     @Resource
     private ImGroupMemberService imGroupMemberService;
-
-    @Resource
-    private ImGroupService imGroupService;
 
     @Resource
     private AppConfig appConfig;
@@ -385,5 +384,36 @@ public class ImGroupServiceImpl implements ImGroupService {
         wrapper.eq("app_id", req.getAppId());
         imGroupMapper.update(update, wrapper);
         return ResponseVO.successResponse();
+    }
+
+    @Override
+    public ResponseVO syncJoinedGroupList(SyncReq req) {
+        if (req.getMaxLimit() > 100) {
+            req.setMaxLimit(100);
+        }
+        SyncResp<ImGroupEntity> resp = new SyncResp<>();
+        ResponseVO<Collection<String>> memberJoinedGroup = imGroupMemberService.syncMemberJoinedGroup(req.getOperater(), req.getAppId());
+        if (memberJoinedGroup.isOk()) {
+            Collection<String> data = memberJoinedGroup.getData();
+            QueryWrapper<ImGroupEntity> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("app_id", req.getAppId());
+            queryWrapper.in("group_id", data);
+            queryWrapper.gt("sequence", req.getLastSequence());
+            queryWrapper.last(" limit " + req.getMaxLimit());
+            queryWrapper.orderByAsc("sequence");
+            List<ImGroupEntity> list = imGroupMapper.selectList(queryWrapper);
+            if (!CollectionUtils.isEmpty(list)) {
+                ImGroupEntity maxSeqEntity = list.get(list.size() - 1);
+                resp.setDataList(list);
+                //设置最大seq
+                Long maxSeq = imGroupMapper.getGroupMaxSeq(data, req.getAppId());
+                resp.setMaxSequence(maxSeq);
+                //设置是否拉取完毕
+                resp.setCompleted(maxSeqEntity.getSequence() >= maxSeq);
+                return ResponseVO.successResponse(resp);
+            }
+        }
+        resp.setCompleted(true);
+        return ResponseVO.successResponse(resp);
     }
 }
