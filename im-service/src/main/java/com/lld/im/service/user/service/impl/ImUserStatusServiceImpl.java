@@ -1,5 +1,7 @@
 package com.lld.im.service.user.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
+import com.lld.im.codec.pack.user.UserCustomStatusChangeNotifyPack;
 import com.lld.im.codec.pack.user.UserStatusChangeNotifyPack;
 import com.lld.im.common.constant.Constants;
 import com.lld.im.common.enums.command.UserEventCommand;
@@ -7,6 +9,7 @@ import com.lld.im.common.model.ClientInfo;
 import com.lld.im.common.model.UserSession;
 import com.lld.im.service.friendship.service.ImFriendShipService;
 import com.lld.im.service.user.model.UserStatusChangeNotifyContent;
+import com.lld.im.service.user.model.req.SetUserCustomerStatusReq;
 import com.lld.im.service.user.model.req.SubscribeUserOnlineStatusReq;
 import com.lld.im.service.user.service.ImUserStatusService;
 import com.lld.im.service.utils.MessageProducer;
@@ -92,5 +95,25 @@ public class ImUserStatusServiceImpl implements ImUserStatusService {
             String userKey = req.getAppId() + ":" + Constants.RedisConstants.subscribe + ":" + beSubUserId;
             stringRedisTemplate.opsForHash().put(userKey, req.getOperater(), subExpireTime.toString());
         }
+    }
+
+    /**
+     * 设置用户自定义状态
+     *
+     * @param req
+     * @return void
+     **/
+    @Override
+    public void setUserCustomerStatus(SetUserCustomerStatusReq req) {
+        UserCustomStatusChangeNotifyPack userCustomStatusChangeNotifyPack = new UserCustomStatusChangeNotifyPack();
+        userCustomStatusChangeNotifyPack.setCustomStatus(req.getCustomStatus());
+        userCustomStatusChangeNotifyPack.setCustomText(req.getCustomText());
+        userCustomStatusChangeNotifyPack.setUserId(req.getUserId());
+        stringRedisTemplate.opsForValue().set(req.getAppId()
+                        + ":" + Constants.RedisConstants.userCustomerStatus + ":" + req.getUserId()
+                , JSONObject.toJSONString(userCustomStatusChangeNotifyPack));
+        syncSender(userCustomStatusChangeNotifyPack, req.getUserId(), new ClientInfo(req.getAppId(),
+                req.getClientType(), req.getImei()));
+        dispatcher(userCustomStatusChangeNotifyPack, req.getUserId(), req.getAppId());
     }
 }
